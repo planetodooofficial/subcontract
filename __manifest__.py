@@ -1,5 +1,5 @@
 {
-    'name': 'Subcontracting',
+    'name': 'Subcontracting through Work Orders',
     'version': '11.0.1.0',
     'summary': 'Subcontracting in Manufacturing Order',
     'description': """
@@ -9,8 +9,11 @@
     'company': 'Planet-Odoo',
     'website': "https://planet-odoo.com/",
     'category': 'Manufacturing',
-    'depends': ['mrp'],
+    'depends': ['base', 'mrp', 'sale', 'purchase', 'stock', 'contacts'],
     'data': [
+        'views/subcontracting_view.xml',
+        'views/subcontracting_routing.xml',
+        'views/subcontracting_workorder.xml'
     ],
     'demo': [],
     'images': [],
