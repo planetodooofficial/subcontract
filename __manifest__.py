@@ -9,8 +9,9 @@
     'company': 'Planet-Odoo',
     'website': "https://planet-odoo.com/",
     'category': 'Manufacturing',
-    'depends': ['base', 'mrp', 'sale', 'purchase', 'stock', 'contacts'],
+    'depends': ['base', 'mrp', 'sale', 'purchase', 'stock', 'contacts', 'product', 'mail'],
     'data': [
+        # 'security/ir.model.access.csv',
         'views/subcontracting_view.xml',
         'views/subcontracting_routing.xml',
         'views/subcontracting_workorder.xml'

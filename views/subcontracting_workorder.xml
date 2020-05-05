@@ -1,162 +1,78 @@
 <odoo>
     <data>
-        <record id="inherit_work_order" model="ir.ui.view">
-            <field name="name">inherit work order</field>
-            <field name="model">mrp.workorder</field>
-            <field name="inherit_id" ref="mrp.mrp_production_workcenter_form_view_inherit"/>
+        <record id="mrp_subcontract_tree_view" model="ir.ui.view">
+			<field name="name">mrp subcontract tree view</field>
+			<field name="model">mrp.subcontract.workorder</field>
+			<field name= "arch" type = "xml">
+				<tree create="false" string="Subcontract Work Order">
+					<field name="name"/>
+					<field name="subcontract_product_id"/>
+			 		<field name="sub_workcenter_name"/>
+			 		<field name="sub_production_id"/>
+			 		<field name="state"/>
+				</tree>
+			</field>
+		</record>
+
+        <record id="mrp_subcontract" model="ir.ui.view">
+            <field name="name">mrp subcontract</field>
+            <field name="model">mrp.subcontract.workorder</field>
             <field name="arch" type="xml">
-                <xpath expr="//form" position="replace">
-                    <form string="Production Workcenter" delete="0" create="0">
-                        <field name="is_user_working" invisible="1"/>
-                        <field name="working_state" invisible="1"/>
-                        <field name="production_state" invisible="1"/>
-                        <header>
-                            <button name="button_finish" type="object" string="Finish Order" attrs="{'invisible': ['|', ('state', '!=', 'progress'), ('is_produced', '=', False)]}" class="btn-info"/>
-                            <button name="button_start" type="object" string="Start Working" attrs="{'invisible': ['|', ('working_state', '=', 'blocked'), ('state', '!=', 'pending')]}"/>
-                            <button name="button_start" type="object" string="Start Working" attrs="{'invisible': ['|', ('working_state', '=', 'blocked'), ('state', '!=', 'ready')]}" class="btn-success"/>
-                            <button name="record_production" type="object" string="Done" class="btn-success" attrs="{'invisible': ['|', '|', '|', ('is_produced', '=', True), ('working_state', '=', 'blocked'), ('state', '!=', 'progress'), ('is_user_working', '=', False)]}"/>
-                            <button name="button_pending" type="object" string="Pause" class="btn-warning" attrs="{'invisible': ['|', '|', ('working_state', '=', 'blocked'), ('state', 'in', ('done', 'pending', 'ready', 'cancel')), ('is_user_working', '=', False)]}"/>
-                            <button name="%(mrp.act_mrp_block_workcenter_wo)d" type="action" context="{'default_workcenter_id': workcenter_id}" string="Block" class="btn-danger" attrs="{'invisible': ['|', '|', ('working_state', '=', 'blocked'), ('state', 'in', ('done', 'pending', 'ready', 'cancel')), ('is_user_working', '=', False)]}"/>
-                            <button name="button_unblock" type="object" string="Unblock" class="btn-danger" attrs="{'invisible': [('working_state', '!=', 'blocked')]}"/>
-                            <button name="button_start" type="object" string="Continue Production" class="btn-warning" attrs="{'invisible': ['|', '|', ('working_state', '=', 'blocked'), ('is_user_working', '=', True), ('state', 'in', ('done', 'pending', 'ready', 'cancel'))]}"></button>
-                            <button name="button_start" type="object" string="Continue Production" attrs="{'invisible': ['|', '|', ('production_state', '=', 'done'), ('working_state', '=', 'blocked'), ('state', '!=', 'done')]}"/>
-                            <button name="button_scrap" type="object" string="Scrap" attrs="{'invisible': [('state', 'in', ('confirmed', 'cancel'))]}"/>
-                            <field name="state" widget="statusbar" statusbar_visible="pending,ready,progress,done"/>
-                        </header>
-                        <sheet>
-                            <div class="oe_button_box" name="button_box">
-                                <button class="oe_stat_button" name="action_see_move_scrap" type="object" icon="fa-arrows-v" attrs="{'invisible': [('scrap_count', '=', 0)]}">
-                                    <div class="o_field_widget o_stat_info">
-                                        <span class="o_stat_value"><field name="scrap_count"/></span>
-                                        <span class="o_stat_text">Scraps</span>
-                                    </div>
-                                </button>
-                            </div>
+                <form string="Production Subcontract Workcenter" delete="0" create="0">
+                    <header>
+                        <!--                        <button name="button_finish" type="object" string="Finish Order" attrs="{'invisible': ['|', ('state', '!=', 'progress'), ('is_produced', '=', False)]}" class="btn-info"/>-->
+                        <!--                        <button name="button_start" type="object" string="Start Working" attrs="{'invisible': ['|', ('working_state', '=', 'blocked'), ('state', '!=', 'pending')]}"/>-->
+                        <!--                        <button name="button_start" type="object" string="Start Working" attrs="{'invisible': ['|', ('working_state', '=', 'blocked'), ('state', '!=', 'ready')]}" class="btn-success"/>-->
+                        <!--                        <button name="record_production" type="object" string="Done" class="btn-success" attrs="{'invisible': ['|', '|', '|', ('is_produced', '=', True), ('working_state', '=', 'blocked'), ('state', '!=', 'progress'), ('is_user_working', '=', False)]}"/>-->
+                        <!--                        <button name="button_pending" type="object" string="Pause" class="btn-warning" attrs="{'invisible': ['|', '|', ('working_state', '=', 'blocked'), ('state', 'in', ('done', 'pending', 'ready', 'cancel')), ('is_user_working', '=', False)]}"/>-->
+                        <!--                        <button name="%(mrp.act_mrp_block_workcenter_wo)d" type="action" context="{'default_workcenter_id': workcenter_id}" string="Block" class="btn-danger" attrs="{'invisible': ['|', '|', ('working_state', '=', 'blocked'), ('state', 'in', ('done', 'pending', 'ready', 'cancel')), ('is_user_working', '=', False)]}"/>-->
+                        <!--                        <button name="button_unblock" type="object" string="Unblock" class="btn-danger" attrs="{'invisible': [('working_state', '!=', 'blocked')]}"/>-->
+                        <!--                        <button name="button_start" type="object" string="Continue Production" class="btn-warning" attrs="{'invisible': ['|', '|', ('working_state', '=', 'blocked'), ('is_user_working', '=', True), ('state', 'in', ('done', 'pending', 'ready', 'cancel'))]}"></button>-->
+                        <!--                        <button name="button_start" type="object" string="Continue Production" attrs="{'invisible': ['|', '|', ('production_state', '=', 'done'), ('working_state', '=', 'blocked'), ('state', '!=', 'done')]}"/>-->
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <group>
                             <group>
-                                <group>
-                                    <field name="product_id" string="To Produce"/>
-                                    <field name="is_subcontracting"/>
-                                    <label for="qty_produced" string="Quantity Produced" attrs="{'invisible': [('is_subcontracting', '=', True)]}"/>
-                                    <div class="o_row" attrs="{'invisible': [('is_subcontracting', '=', True)]}">
-                                        <field name="qty_produced"/> /
-                                        <field name="qty_production"/>
-                                        <field name="product_uom_id"/>
-                                        <field name="production_availability" nolabel="1" widget="bullet_state" options="{'classes': {'assigned': 'success', 'waiting': 'danger'}}" attrs="{'invisible': [('state', '=', 'done')]}"/>
-                                    </div>
-                                    <field name="is_produced" invisible="1"/>
-                                </group>
-                                <div class="alert alert-danger alert-dismissible text-left" role="alert" attrs="{'invisible': [('production_messages', '=', False)]}">
-                                    <a href="#" class="close" data-dismiss="alert" aria-label="close">x</a>
-                                    <field name="production_messages"/>
-                                </div>
+                                <field name="subcontract_product_id" string="To Produce"/>
+                                <field name="is_subcontracting" invisible="1"/>
                             </group>
-                            <notebook>
-                                <page string="Work Instruction" attrs="{'invisible': [('worksheet', '=', False)]}">
-                                    <field name="worksheet" widget="pdf_viewer"/>
-                                </page>
-                                <page string="Current Production" attrs="{'invisible': [('is_subcontracting', '=', True)]}">
+                        </group>
+                        <notebook>
+                            <page string="Miscellaneous" groups="mrp.group_mrp_manager">
+                                <group>
                                     <group>
-                                        <group>
-                                            <field name="qty_producing" string="Current Qty" attrs="{'readonly': ['|', ('product_tracking', '=', 'serial'), ('state', 'in', ('done', 'cancel'))]}"/>
-                                            <field name="final_lot_id" context="{'default_product_id': product_id}" domain="['|', '&amp;', ('product_id', '=', product_id), ('product_id.tracking', '!=', 'serial'), ('use_next_on_work_order_id', '=', id)]" attrs="{'invisible': [('product_tracking', '=', 'none')]}" groups="stock.group_production_lot"/>
-                                            <field name="product_tracking" invisible="1"/>
-                                        </group>
+                                        <field name="name"/>
+                                        <field name="sub_workcenter_name" readonly="1"/>
+                                        <field name="sub_production_id" readonly="1"/>
                                     </group>
-                                    <field name="move_raw_ids" invisible="1"/>
-                                    <field name="active_move_line_ids" attrs="{'invisible': [('active_move_line_ids', '=', [])]}">
-                                        <tree editable="bottom" create="0" delete="0">
-                                            <field name="product_id"/>
-                                            <field name="product_uom_qty" readonly="1" invisible="1" string="To Consume"/>
-                                            <field name="lot_id" domain="[('product_id', '=', product_id)]" context="{'default_product_id': product_id}"/>
-                                            <field name="qty_done"/>
-                                            <field name="product_uom_id" invisible="1"/>
-                                            <field name="location_id" invisible="1"/>
-                                            <field name="location_dest_id" invisible="1"/>
-                                            <field name="move_id" invisible="1"/>
-                                            <field name="done_wo" invisible="1"/>
-                                        </tree>
-                                    </field>
-                                </page>
-                                <page string="Time Tracking" groups="mrp.group_mrp_manager" attrs="{'invisible': [('is_subcontracting', '=', True)]}">
-                                    <group>
-                                        <group>
-                                            <label for="date_planned_start" string="Planned Date"/>
-                                            <div class="o_row">
-                                                <field name="date_planned_start" class="mr8"/>
-                                                <div attrs="{'invisible': [('date_planned_start', '=', False)]}" class="o_row">
-                                                    <strong attrs="{'invisible': [('date_planned_finished', '=', False)]}" class="mr8">to</strong>
-                                                    <strong class="oe_edit_only mr8" attrs="{'invisible': [('date_planned_finished', '!=', False)]}">to</strong>
-                                                    <field name="date_planned_finished"/>
-                                                </div>
-                                            </div>
-                                            <label for="date_start" string="Effective Date"/>
-                                            <div class="o_row">
-                                                <field name="date_start" readonly="1"/>
-                                                <div  attrs="{'invisible': [('date_finished', '=', False)]}">
-                                                    <strong class="mr8">to</strong>
-                                                    <field name="date_finished" readonly="1"/>
-                                                </div>
-                                            </div>
-                                        </group>
-                                        <group>
-                                            <label for="duration_expected"/>
-                                            <div>
-                                                <field name="duration_expected" widget="float_time" class="oe_inline"/>
-                                                minutes
-                                            </div>
-                                            <label for="duration"/>
-                                            <div>
-                                                <button style="pointer-events: none;" class="oe_inline label label-default">
-                                                    <field name="duration" widget="mrp_time_counter" help="Time the currently logged user spent on this workorder."/>
-                                                </button>
-                                            </div>
-                                        </group>
-                                    </group>
-                                    <group>
-                                        <field name="time_ids" nolabel="1" context="{'default_workcenter_id': workcenter_id}">
-                                            <tree>
-                                                <field name="date_start"/>
-                                                <field name="date_end"/>
-                                                <field name="duration" widget="float_time" sum="Total duration"/>
-                                                <field name="user_id"/>
-                                                <field name="workcenter_id" invisible="1"/>
-                                                <field name="loss_id" string="Efficiency"/>
-                                            </tree>
-                                            <form>
-                                                <group>
-                                                    <group>
-                                                        <field name="date_start"/>
-                                                        <field name="date_end"/>
-                                                        <field name="duration" widget="float_time"/>
-                                                    </group>
-                                                    <group>
-                                                        <field name="user_id"/>
-                                                        <field name="workcenter_id"/>
-                                                        <field name="loss_id"/>
-                                                    </group>
-                                                </group>
-                                            </form>
-                                        </field>
-                                    </group>
-                                </page>
-                                <page string="Miscellaneous" groups="mrp.group_mrp_manager">
-                                    <group>
-                                        <group>
-                                            <field name="name"/>
-                                            <field name="workcenter_id" readonly="1"/>
-                                            <field name="production_id" readonly="1"/>
-                                        </group>
-                                    </group>
-                                </page>
-                            </notebook>
-                        </sheet>
-                        <div class="oe_chatter" groups="mrp.group_mrp_manager">
-                            <field name="message_follower_ids" widget="mail_followers"/>
-                            <field name="message_ids" widget="mail_thread"/>
-                        </div>
-                    </form>
-                </xpath>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter" groups="mrp.group_mrp_manager">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
             </field>
         </record>
+
+        <record model="ir.actions.act_window" id="subcontract_work_order_action">
+            <field name="name">Subcontracted Work Orders</field>
+            <field name="res_model">mrp.subcontract.workorder</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_smiling_face">Subcontracted Work Orders
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_mrp_subcontract_workorder"
+            name="Subcontract Work Orders"
+            action="subcontract_work_order_action"
+            parent="mrp.menu_mrp_manufacturing"
+            groups="mrp.group_mrp_routings"/>
     </data>
 </odoo>

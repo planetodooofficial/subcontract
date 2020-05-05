@@ -12,9 +12,17 @@ class SubcontractingWorkCenter(models.Model):
 
 
 class SubcontractingWorkOrder(models.Model):
-    _inherit = 'mrp.workorder'
+    _name = 'mrp.subcontract.workorder'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    is_subcontracting = fields.Boolean('Subcontracting')
+    is_subcontracting = fields.Boolean('Subcontracting', default=False)
+    subcontract_product_id = fields.Many2one('product.product', 'To Produce')
+    name = fields.Char('Work Order')
+    sub_workcenter_name = fields.Many2one('mrp.workcenter', 'Work Center')
+    sub_production_id = fields.Many2one('mrp.production', 'Manufacturing Order')
+    state = fields.Selection([('pending', 'Pending'), ('ready', 'Ready'), ('progress', 'Progress'), ('done', 'Done')], string='State')
+
+
 
 
 class SubcontractingPurchaseOrder(models.Model):
@@ -31,12 +39,13 @@ class SubcontractingMrp(models.Model):
         operations = self.routing_id.operation_ids
         for rec in operations:
             if rec.is_subcontract is True:
-                self.env['mrp.workorder'].create({
+                self.env['mrp.subcontract.workorder'].create({
                     'is_subcontracting': True,
-                    'product_id': self.product_id.id,
+                    'subcontract_product_id': self.product_id.id,
                     'name': rec.name,
-                    'workcenter_id': rec.workcenter_id.id,
-                    'production_id': self.id
+                    'sub_workcenter_name': rec.workcenter_id.id,
+                    'sub_production_id': self.id,
+                    'subcontract_state': 'pending'
                 })
             else:
                 orders_to_plan = self.filtered(lambda order: order.routing_id and order.state == 'confirmed')
