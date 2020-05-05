@@ -1,78 +1,27 @@
 <odoo>
     <data>
-        <record id="mrp_subcontract_tree_view" model="ir.ui.view">
-			<field name="name">mrp subcontract tree view</field>
-			<field name="model">mrp.subcontract.workorder</field>
-			<field name= "arch" type = "xml">
-				<tree create="false" string="Subcontract Work Order">
-					<field name="name"/>
-					<field name="subcontract_product_id"/>
-			 		<field name="sub_workcenter_name"/>
-			 		<field name="sub_production_id"/>
-			 		<field name="state"/>
-				</tree>
-			</field>
-		</record>
-
-        <record id="mrp_subcontract" model="ir.ui.view">
-            <field name="name">mrp subcontract</field>
-            <field name="model">mrp.subcontract.workorder</field>
+        <record id="mrp_workorder_inherit" model="ir.ui.view">
+            <field name="name">mrp.workorder.inherit</field>
+            <field name="model">mrp.workorder</field>
+            <field name="inherit_id" ref="mrp.mrp_production_workcenter_form_view_inherit"/>
             <field name="arch" type="xml">
-                <form string="Production Subcontract Workcenter" delete="0" create="0">
-                    <header>
-                        <!--                        <button name="button_finish" type="object" string="Finish Order" attrs="{'invisible': ['|', ('state', '!=', 'progress'), ('is_produced', '=', False)]}" class="btn-info"/>-->
-                        <!--                        <button name="button_start" type="object" string="Start Working" attrs="{'invisible': ['|', ('working_state', '=', 'blocked'), ('state', '!=', 'pending')]}"/>-->
-                        <!--                        <button name="button_start" type="object" string="Start Working" attrs="{'invisible': ['|', ('working_state', '=', 'blocked'), ('state', '!=', 'ready')]}" class="btn-success"/>-->
-                        <!--                        <button name="record_production" type="object" string="Done" class="btn-success" attrs="{'invisible': ['|', '|', '|', ('is_produced', '=', True), ('working_state', '=', 'blocked'), ('state', '!=', 'progress'), ('is_user_working', '=', False)]}"/>-->
-                        <!--                        <button name="button_pending" type="object" string="Pause" class="btn-warning" attrs="{'invisible': ['|', '|', ('working_state', '=', 'blocked'), ('state', 'in', ('done', 'pending', 'ready', 'cancel')), ('is_user_working', '=', False)]}"/>-->
-                        <!--                        <button name="%(mrp.act_mrp_block_workcenter_wo)d" type="action" context="{'default_workcenter_id': workcenter_id}" string="Block" class="btn-danger" attrs="{'invisible': ['|', '|', ('working_state', '=', 'blocked'), ('state', 'in', ('done', 'pending', 'ready', 'cancel')), ('is_user_working', '=', False)]}"/>-->
-                        <!--                        <button name="button_unblock" type="object" string="Unblock" class="btn-danger" attrs="{'invisible': [('working_state', '!=', 'blocked')]}"/>-->
-                        <!--                        <button name="button_start" type="object" string="Continue Production" class="btn-warning" attrs="{'invisible': ['|', '|', ('working_state', '=', 'blocked'), ('is_user_working', '=', True), ('state', 'in', ('done', 'pending', 'ready', 'cancel'))]}"></button>-->
-                        <!--                        <button name="button_start" type="object" string="Continue Production" attrs="{'invisible': ['|', '|', ('production_state', '=', 'done'), ('working_state', '=', 'blocked'), ('state', '!=', 'done')]}"/>-->
-                        <field name="state" widget="statusbar"/>
-                    </header>
-                    <sheet>
+                <xpath expr="//header" position="inside">
+                    <button name="create_rfq" type="object" string="Create RFQ" attrs="{'invisible': [('is_rfq', '=', True)]}" class="btn-success"/>
+                </xpath>
+                <xpath expr="//field[@name='product_id']" position="after">
+                    <field name="is_rfq"/>
+                </xpath>
+                <xpath expr="//notebook/page[3]" position="after">
+                    <page string="Subcontracting Info">
                         <group>
-                            <group>
-                                <field name="subcontract_product_id" string="To Produce"/>
-                                <field name="is_subcontracting" invisible="1"/>
-                            </group>
+                            <field name="subcontract_wo_vendor"/>
+                            <field name="subcontract_wo_product"/>
+                            <field name="subcontract_wo_service_cost"/>
+                            <field name="is_subcontract" invisible="1"/>
                         </group>
-                        <notebook>
-                            <page string="Miscellaneous" groups="mrp.group_mrp_manager">
-                                <group>
-                                    <group>
-                                        <field name="name"/>
-                                        <field name="sub_workcenter_name" readonly="1"/>
-                                        <field name="sub_production_id" readonly="1"/>
-                                    </group>
-                                </group>
-                            </page>
-                        </notebook>
-                    </sheet>
-                    <div class="oe_chatter" groups="mrp.group_mrp_manager">
-                        <field name="message_follower_ids" widget="mail_followers"/>
-                        <field name="message_ids" widget="mail_thread"/>
-                    </div>
-                </form>
+                    </page>
+                </xpath>
             </field>
         </record>
-
-        <record model="ir.actions.act_window" id="subcontract_work_order_action">
-            <field name="name">Subcontracted Work Orders</field>
-            <field name="res_model">mrp.subcontract.workorder</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-            <field name="help" type="html">
-                <p class="oe_view_nocontent_smiling_face">Subcontracted Work Orders
-                </p>
-            </field>
-        </record>
-
-        <menuitem id="menu_mrp_subcontract_workorder"
-            name="Subcontract Work Orders"
-            action="subcontract_work_order_action"
-            parent="mrp.menu_mrp_manufacturing"
-            groups="mrp.group_mrp_routings"/>
     </data>
 </odoo>
