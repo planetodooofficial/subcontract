@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report
+                string="Delivery Challan"
+                id="action_report_challan"
+                model="mrp.workorder"
+                name="subcontract.report_material_issued_template"
+                file="subcontract.report.material_issued_report"
+                report_type="qweb-pdf"
+                print_report_name="'Delivery Challan - %s' % object.name"
+        />
+    </data>
+</odoo>

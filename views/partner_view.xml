@@ -1,0 +1,14 @@
+<odoo>
+     <data>
+        <record id="inherit_contacts_vendor" model="ir.ui.view">
+            <field name="name">inherit contacts vendor</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='property_stock_supplier']" position="after">
+                    <field name="subcontracted_location" domain="[('usage', '=', 'internal')]"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

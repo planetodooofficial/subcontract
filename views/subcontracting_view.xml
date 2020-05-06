@@ -11,8 +11,9 @@
                         <group>
                             <field name="is_subcontract"/>
                             <field name="subcontract_vendor" attrs="{'invisible': [('is_subcontract', '=', False)], 'required':[('is_subcontract', '=', True)]}"/>
-                            <field name="subcontract_product" attrs="{'invisible': [('is_subcontract', '=', False)], 'required':[('is_subcontract', '=', True)]}"/>
+                            <field name="subcontract_product" domain="[('type', '=', 'service')]" attrs="{'invisible': [('is_subcontract', '=', False)], 'required':[('is_subcontract', '=', True)]}"/>
                             <field name="subcontract_service_cost" attrs="{'invisible': [('is_subcontract', '=', False)], 'required':[('is_subcontract', '=', True)]}"/>
+                            <field name="subcontract_location" attrs="{'invisible': [('is_subcontract', '=', False)], 'required':[('is_subcontract', '=', True)]}"/>
                         </group>
                     </page>
                 </xpath>

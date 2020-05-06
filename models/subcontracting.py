@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
+from odoo.exceptions import UserError, AccessError, ValidationError
 
 from odoo import models, api, fields, _
 
@@ -9,8 +10,23 @@ class SubcontractingWorkCenter(models.Model):
 
     is_subcontract = fields.Boolean('Subcontracting')
     subcontract_vendor = fields.Many2one('res.partner', 'Supplier')
-    subcontract_product = fields.Many2one('product.product', 'Product')
+    subcontract_product = fields.Many2one('product.template', 'Product')
     subcontract_service_cost = fields.Integer('Cost Per Unit')
+    subcontract_location = fields.Many2one('stock.location', 'Supplier Location')
+
+    @api.onchange('subcontract_vendor')
+    def onchange_supplier_location(self):
+        if self.subcontract_vendor.subcontracted_location:
+            self.subcontract_location = self.subcontract_vendor.subcontracted_location.id
+        else:
+            self.subcontract_location = ''
+            raise ValidationError(_("Please mention 'Subcontracted Location' for the selected Supplier."))
+
+
+class VendorLocation(models.Model):
+    _inherit = 'res.partner'
+
+    subcontracted_location = fields.Many2one('stock.location', 'Subcontracted Location')
 
 
 class MRP(models.Model):
@@ -27,27 +43,30 @@ class MRP(models.Model):
             order._generate_workorders(boms)
 
         for operations in self.routing_id.operation_ids:
-            self.env['mrp.workorder'].write({
-                'is_subcontract': True,
-                'subcontract_wo_vendor': operations.subcontract_vendor.id,
-                'subcontract_wo_product': operations.subcontract_product.id,
-                'subcontract_wo_service_cost': operations.subcontract_service_cost
-            })
+            for workorder in self.workorder_ids:
+                if operations.name == workorder.name:
+                    workorder.update({
+                        'is_subcontract': True,
+                        'subcontract_wo_vendor': operations.subcontract_vendor.id,
+                        'subcontract_wo_product': operations.subcontract_product.id,
+                        'subcontract_wo_service_cost': operations.subcontract_service_cost,
+                        'subcontract_supplier_location': operations.subcontract_location.id
+                    })
         return orders_to_plan.write({'state': 'planned'})
 
 
 class SubcontractingWorkOrder(models.Model):
     _inherit = 'mrp.workorder'
 
-    is_subcontract = fields.Boolean('Subcontracting', readonly=True, store=True)
+    is_subcontract = fields.Boolean('Subcontracting', readonly=False, store=True)
     subcontract_wo_vendor = fields.Many2one('res.partner', 'Supplier', readonly=True, store=True)
     subcontract_wo_product = fields.Many2one('product.template', 'Product', readonly=True, store=True)
     subcontract_wo_service_cost = fields.Float('Cost Per Unit', readonly=True, store=True)
+    subcontract_supplier_location = fields.Many2one('stock.location', "Supplier Location", readonly=True, store=True)
 
     is_rfq = fields.Boolean('RFQ', default=False)
 
     def create_rfq(self):
-
         receipt = self.env['stock.picking.type'].search([('name', '=', 'Receipts')], limit=1)
         product = self.env['product.product'].search([('name', '=', self.subcontract_wo_product.name)])
 
@@ -70,4 +89,19 @@ class SubcontractingWorkOrder(models.Model):
                 'price_unit': orders.subcontract_wo_service_cost,
             })
 
+        self.update({'is_rfq': True})
 
+    @api.multi
+    def button_start(self):
+        res = ''
+        mrp = self.env['mrp.production'].search([('name', '=', self.production_id.name)])
+        for workorder in mrp.workorder_ids:
+            if workorder.state == 'progress':
+                raise ValidationError(
+                    _("Please finish the 'In Progress' Work Order first to proceed with the next one."))
+            else:
+                res = super(SubcontractingWorkOrder, self).button_start()
+        return res
+
+    def print_delivery_challan(self):
+        print()
