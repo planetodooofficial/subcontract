@@ -14,13 +14,15 @@ class SubcontractingWorkCenter(models.Model):
     subcontract_service_cost = fields.Integer('Cost Per Unit')
     subcontract_location = fields.Many2one('stock.location', 'Supplier Location')
 
+    @api.multi
     @api.onchange('subcontract_vendor')
     def onchange_supplier_location(self):
-        if self.subcontract_vendor.subcontracted_location:
-            self.subcontract_location = self.subcontract_vendor.subcontracted_location.id
-        else:
-            self.subcontract_location = ''
-            raise ValidationError(_("Please mention 'Subcontracted Location' for the selected Supplier."))
+        if self.is_subcontract:
+            if self.subcontract_vendor.subcontracted_location:
+                self.subcontract_location = self.subcontract_vendor.subcontracted_location.id
+            else:
+                self.subcontract_location = ''
+                raise ValidationError(_("Please mention 'Subcontracted Location' for the selected Supplier."))
 
 
 class VendorLocation(models.Model):
