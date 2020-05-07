@@ -92,10 +92,6 @@ class SubcontractingWorkOrder(models.Model):
                 'sale_order_number': sale_id.id if sale_id.id else None
             })
 
-            self.update({
-                'rfq_ids': rfq.id
-            })
-
             order_line = self.env['purchase.order.line'].create({
                 'order_id': rfq.id,
                 'product_id': product.id,
@@ -104,6 +100,10 @@ class SubcontractingWorkOrder(models.Model):
                 'product_qty': 1,
                 'product_uom': product.uom_po_id.id,
                 'price_unit': orders.subcontract_wo_service_cost,
+            })
+
+            self.update({
+                'rfq_ids': rfq.id
             })
 
         self.update({'is_rfq': True})
