@@ -12,6 +12,7 @@
     'depends': ['base', 'mrp', 'sale', 'purchase', 'stock', 'contacts', 'product', 'mail'],
     'data': [
         # 'security/ir.model.access.csv',
+        'wizard/stock_move_location.xml',
         'views/subcontracting_view.xml',
         'views/subcontracting_routing.xml',
         'views/subcontracting_workorder.xml',

@@ -110,14 +110,14 @@ class SubcontractingWorkOrder(models.Model):
 
     @api.multi
     def button_start(self):
-        res = ''
         mrp = self.env['mrp.production'].search([('name', '=', self.production_id.name)])
         for workorder in mrp.workorder_ids:
             if workorder.state == 'progress':
                 raise ValidationError(
                     _("Please finish the 'In Progress' Work Order first to proceed with the next one."))
             else:
-                res = super(SubcontractingWorkOrder, self).button_start()
+                pass
+        res = super(SubcontractingWorkOrder, self).button_start()
         return res
 
     def print_delivery_challan(self):
