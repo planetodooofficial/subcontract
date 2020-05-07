@@ -5,52 +5,62 @@
             <field name="model">mrp.workorder</field>
             <field name="inherit_id" ref="mrp.mrp_production_workcenter_form_view_inherit"/>
             <field name="arch" type="xml">
+                <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
+                    <button type="action"
+                            string="RFQ"
+                            name="%(purchase.purchase_rfq)d"
+                            class="oe_stat_button"
+                            icon="fa-check-circle-o"
+                            attrs="{'invisible':[('is_rfq', '=', False)]}">
+                        <field name="rfq_ids" invisible="1"/>
+                    </button>
+                </xpath>
                 <xpath expr="//header" position="inside">
                     <button name="create_rfq" type="object" string="Create RFQ" attrs="{'invisible': [('is_rfq', '=', True)]}" class="btn-success"/>
                     <button name="print_delivery_challan" type="object" string="Print Delivery Challan" class="btn-info"/>
                 </xpath>
                 <xpath expr="//field[@name='product_id']" position="after">
                     <field name="is_rfq" invisible="1"/>
+                    <field name="is_subcontract" invisible="1"/>
                 </xpath>
                 <xpath expr="//notebook/page[3]" position="after">
-                    <page string="Subcontracting Info">
+                    <page string="Subcontracting Info" attrs="{'invisible': [('is_subcontract', '!=', True)]}">
                         <group>
                             <field name="subcontract_wo_vendor"/>
                             <field name="subcontract_wo_product" domain="[('type', '=', 'service')]"/>
                             <field name="subcontract_wo_service_cost"/>
                             <field name="subcontract_supplier_location"/>
-                            <field name="is_subcontract" invisible="1"/>
                         </group>
                     </page>
                 </xpath>
             </field>
         </record>
 
-<!--        <record model="ir.actions.act_window" id="mrp_workorder_todo">-->
-<!--            <field name="name">Work Orders</field>-->
-<!--            <field name="type">ir.actions.act_window</field>-->
-<!--            <field name="res_model">mrp.workorder</field>-->
-<!--            <field name="view_type">form</field>-->
-<!--            <field name="view_mode">kanban,tree,form,calendar,pivot,graph</field>-->
-<!--            <field name="search_view_id" ref="mrp.view_mrp_production_workcenter_form_view_filter"/>-->
-<!--            <field name="context">{'search_default_ready': True, 'search_default_progress': True}</field>-->
-<!--            <field name="domain">[('is_subcontract', '!=', True)]</field>-->
-<!--            <field name="help" type="html">-->
-<!--                <p class="oe_view_nocontent_create">-->
-<!--                    Click to start a new work order.-->
-<!--                </p><p>-->
-<!--                Work Orders are operations to be processed at a Work Center to realize a-->
-<!--                Manufacturing Order. Work Orders are trigerred by Manufacturing Orders,-->
-<!--                they are based on the Routing defined on these ones.-->
-<!--            </p>-->
-<!--            </field>-->
-<!--        </record>-->
+        <!--        <record model="ir.actions.act_window" id="mrp_workorder_todo">-->
+        <!--            <field name="name">Work Orders</field>-->
+        <!--            <field name="type">ir.actions.act_window</field>-->
+        <!--            <field name="res_model">mrp.workorder</field>-->
+        <!--            <field name="view_type">form</field>-->
+        <!--            <field name="view_mode">kanban,tree,form,calendar,pivot,graph</field>-->
+        <!--            <field name="search_view_id" ref="mrp.view_mrp_production_workcenter_form_view_filter"/>-->
+        <!--            <field name="context">{'search_default_ready': True, 'search_default_progress': True}</field>-->
+        <!--            <field name="domain">[('is_subcontract', '!=', True)]</field>-->
+        <!--            <field name="help" type="html">-->
+        <!--                <p class="oe_view_nocontent_create">-->
+        <!--                    Click to start a new work order.-->
+        <!--                </p><p>-->
+        <!--                Work Orders are operations to be processed at a Work Center to realize a-->
+        <!--                Manufacturing Order. Work Orders are trigerred by Manufacturing Orders,-->
+        <!--                they are based on the Routing defined on these ones.-->
+        <!--            </p>-->
+        <!--            </field>-->
+        <!--        </record>-->
 
-<!--        <menuitem id="menu_mrp_workorder_todo"-->
-<!--                  name="Work Orders"-->
-<!--                  action="mrp_workorder_todo"-->
-<!--                  parent="mrp.menu_mrp_manufacturing"-->
-<!--                  groups="mrp.group_mrp_routings"/>-->
+        <!--        <menuitem id="menu_mrp_workorder_todo"-->
+        <!--                  name="Work Orders"-->
+        <!--                  action="mrp_workorder_todo"-->
+        <!--                  parent="mrp.menu_mrp_manufacturing"-->
+        <!--                  groups="mrp.group_mrp_routings"/>-->
 
         <record model="ir.actions.act_window" id="subcontract_workorders">
             <field name="name">Subcontract WorkOrders</field>

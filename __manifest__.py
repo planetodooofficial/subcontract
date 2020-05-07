@@ -16,6 +16,7 @@
         'views/subcontracting_routing.xml',
         'views/subcontracting_workorder.xml',
         'views/partner_view.xml',
+        'views/purchase_view.xml',
     ],
     'demo': [],
     'images': [],

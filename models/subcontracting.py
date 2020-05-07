@@ -29,6 +29,13 @@ class VendorLocation(models.Model):
     subcontracted_location = fields.Many2one('stock.location', 'Subcontracted Location')
 
 
+class PurchaseOrder(models.Model):
+    _inherit = 'purchase.order'
+
+    manufacturing_order_number = fields.Many2one('mrp.production', "Manufacturing Order", store=True)
+    sale_order_number = fields.Many2one('sale.order', "Sale Order", store=True)
+
+
 class MRP(models.Model):
     _inherit = 'mrp.production'
 
@@ -45,20 +52,21 @@ class MRP(models.Model):
         for operations in self.routing_id.operation_ids:
             for workorder in self.workorder_ids:
                 if operations.name == workorder.name:
-                    workorder.update({
-                        'is_subcontract': True,
-                        'subcontract_wo_vendor': operations.subcontract_vendor.id,
-                        'subcontract_wo_product': operations.subcontract_product.id,
-                        'subcontract_wo_service_cost': operations.subcontract_service_cost,
-                        'subcontract_supplier_location': operations.subcontract_location.id
-                    })
+                    if operations.is_subcontract is True:
+                        workorder.update({
+                            'is_subcontract': True,
+                            'subcontract_wo_vendor': operations.subcontract_vendor.id,
+                            'subcontract_wo_product': operations.subcontract_product.id,
+                            'subcontract_wo_service_cost': operations.subcontract_service_cost,
+                            'subcontract_supplier_location': operations.subcontract_location.id
+                        })
         return orders_to_plan.write({'state': 'planned'})
 
 
 class SubcontractingWorkOrder(models.Model):
     _inherit = 'mrp.workorder'
 
-    is_subcontract = fields.Boolean('Subcontracting', readonly=False, store=True)
+    is_subcontract = fields.Boolean('Subcontracting', readonly=False, store=True, default=False)
     subcontract_wo_vendor = fields.Many2one('res.partner', 'Supplier', readonly=True, store=True)
     subcontract_wo_product = fields.Many2one('product.template', 'Product', readonly=True, store=True)
     subcontract_wo_service_cost = fields.Float('Cost Per Unit', readonly=True, store=True)
@@ -66,9 +74,12 @@ class SubcontractingWorkOrder(models.Model):
 
     is_rfq = fields.Boolean('RFQ', default=False)
 
+    rfq_ids = fields.Many2one('purchase.order', 'RFQ')
+
     def create_rfq(self):
         receipt = self.env['stock.picking.type'].search([('name', '=', 'Receipts')], limit=1)
         product = self.env['product.product'].search([('name', '=', self.subcontract_wo_product.name)])
+        sale_id = self.env['sale.order'].search([('name', '=', self.production_id.origin)])
 
         for orders in self:
             rfq = self.env['purchase.order'].create({
@@ -76,7 +87,13 @@ class SubcontractingWorkOrder(models.Model):
                 'date_order': datetime.now(),
                 'origin': self.name,
                 'date_planned': datetime.now(),
-                'picking_type_id': receipt.id
+                'picking_type_id': receipt.id,
+                'manufacturing_order_number': self.production_id.id,
+                'sale_order_number': sale_id.id if sale_id.id else None
+            })
+
+            self.update({
+                'rfq_ids': rfq.id
             })
 
             order_line = self.env['purchase.order.line'].create({
