@@ -246,8 +246,8 @@ class SubcontractingWorkOrder(models.Model):
             'picking_id': picking.name,
             'start_date': picking.date,
             'end_date': picking.date_done,
-            'source_location': picking.location_id,
-            'destination_location': picking.location_dest_id,
+            'source_location': picking.location_id.name,
+            'destination_location': picking.location_dest_id.name,
         }]
         for record in picking.move_lines:
             product_vals = {
