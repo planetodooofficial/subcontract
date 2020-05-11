@@ -17,7 +17,7 @@
         'views/subcontracting_workorder.xml',
         'views/partner_view.xml',
         'views/purchase_view.xml',
-        'report/delivery_challan_report.xml',
+        'report/delivery_challan_template.xml',
         'report/report_views.xml',
     ],
     'demo': [],
