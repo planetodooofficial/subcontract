@@ -101,6 +101,20 @@ class SubcontractingWorkOrder(models.Model):
     delivery_challan_id = fields.Many2one('stock.picking', readonly=True, store=True)
     delivery_challan = fields.Boolean(readonly=True, store=True, default=False)
 
+    def po(self):
+        purchase_id = self.env.ref('purchase.purchase_order_form').id
+        search_po = self.env['purchase.order'].search([('origin', '=', self.name)], limit=1).id
+        return {
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'purchase.order',
+            'views': [(purchase_id, 'form')],
+            'view_id': purchase_id,
+            'res_id': search_po,
+            'target': 'current',
+        }
+
     # Create RFQ for work order and product inside the work order.
     def create_rfq(self):
         receipt = self.env['stock.picking.type'].search([('name', '=', 'Receipts')], limit=1)
@@ -248,6 +262,9 @@ class SubcontractingWorkOrder(models.Model):
             'end_date': picking.date_done,
             'source_location': picking.location_id.name,
             'destination_location': picking.location_dest_id.name,
+            'next_workorder_id': self.next_work_order_id.id if self.next_work_order_id.id else False,
+            'finished_product': self.product_id.name,
+            'qty_finished_product': self.qty_produced
         }]
         for record in picking.move_lines:
             product_vals = {

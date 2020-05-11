@@ -3,89 +3,87 @@
 
     <template id="report_delivery_document">
         <t t-call="web.external_layout">
-            <t t-foreach="docs" t-as="o">
-                <div class="page">
-                    <table class="table table-condensed mt48">
-                        <div class="oe_structure"/>
-                        <div>
-                            <t t-foreach="datas" t-as='val'>
-                                <div class="row">
-                                    <div class="col-xs-12">
-                                        <h2>Delivery Challan for # : <span t-esc="val['picking_id']"/></h2>
-                                    </div>
+            <t class="page">
+                <table class="table table-condensed mt48">
+                    <div class="oe_structure"/>
+                    <div>
+                        <t t-foreach="datas" t-as='val'>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <h2>Delivery Challan for # : <span t-esc="val['picking_id']"/></h2>
                                 </div>
-                                <div class="row mt32 mb32">
-                                    <div class="col-xs-3">
-                                        <strong>Created Date:</strong><br/>
-                                        <span t-esc="val['start_date']"/>
-                                    </div>
-                                    <div class="col-xs-3">
-                                        <strong>End Date:</strong><br/>
-                                        <span t-esc="val['end_date']"/>
-                                    </div>
-                                    <div class="col-xs-3">
-                                        <strong>Source Location:</strong><br/>
-                                        <span t-esc="val['source_location']"/>
-                                    </div>
-                                    <div class="col-xs-3">
-                                        <strong>Destination Location:</strong><br/>
-                                        <span t-esc="val['destination_location']"/>
-                                    </div>
+                            </div>
+                            <div class="row mt32 mb32">
+                                <div class="col-xs-3">
+                                    <strong>Created Date:</strong><br/>
+                                    <span t-esc="val['start_date']"/>
                                 </div>
-                            </t>
-                        </div>
-                    </table>
+                                <div class="col-xs-3">
+                                    <strong>End Date:</strong><br/>
+                                    <span t-esc="val['end_date']"/>
+                                </div>
+                                <div class="col-xs-3">
+                                    <strong>Source Location:</strong><br/>
+                                    <span t-esc="val['source_location']"/>
+                                </div>
+                                <div class="col-xs-3">
+                                    <strong>Destination Location:</strong><br/>
+                                    <span t-esc="val['destination_location']"/>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </table>
 
-                    <table class="table table-sm o_main_table">
-                        <div t-if="o.next_work_order_id">
-                            <h3>Raw Materials</h3>
-                            <thead>
-                                <tr>
-                                    <th class="text-left" style="width:80%"><strong>Product</strong></th>
-                                    <th class="text-center" ><strong>Quantity</strong></th>
-                                    <th class="text-center"><strong>Unit</strong></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <t t-foreach="product_datas" t-as='val'>
-                                    <tr>
-                                        <td class="text-left">
-                                            <span t-esc="val['product_id']"/>
-                                        </td>
-                                        <td class="text-center">
-                                            <span t-esc="val['qty']"/>
-                                        </td>
-                                        <td class="text-center">
-                                            <span t-esc="val['uom']"/>
-                                        </td>
-                                    </tr>
+                <table class="table table-sm o_main_table">
+                    <h3>Raw Materials</h3>
+                    <thead>
+                        <tr>
+                            <th class="text-left" style="width:80%"><strong>Product</strong></th>
+                            <th class="text-center" ><strong>Quantity</strong></th>
+                            <th class="text-center"><strong>Unit</strong></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="product_datas" t-as='val'>
+                            <tr>
+                                <td class="text-left">
+                                    <span t-esc="val['product_id']"/>
+                                </td>
+                                <td class="text-center">
+                                    <span t-esc="val['qty']"/>
+                                </td>
+                                <td class="text-center">
+                                    <span t-esc="val['uom']"/>
+                                </td>
+                            </tr>
 
-                                </t>
-                            </tbody>
-                        </div>
-                        <div>
-                            <h3>Finished Materials</h3>
-                            <thead>
-                                <tr>
-                                    <th class="text-left" style="width:80%"><strong>Product</strong></th>
-                                    <th class="text-center" ><strong>Quantity</strong></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <t t-foreach="product_datas" t-as='val'>
-                                    <tr>
-                                        <td class="text-left">
-                                            <span t-esc="o.product_id"/>
-                                        </td>
-                                        <td class="text-center">
-                                            <span t-esc="o.qty_producing"/>
-                                        </td>
-                                    </tr>
-                                </t>
-                            </tbody>
-                        </div>
-                    </table>
-                </div>
+                        </t>
+                    </tbody>
+                </table>
+<!--                <table class="table table-sm o_main_table">-->
+<!--                    <div>-->
+<!--                        <h3>Finished Materials</h3>-->
+<!--                        <thead>-->
+<!--                            <tr>-->
+<!--                                <th class="text-left" style="width:80%"><strong>Product</strong></th>-->
+<!--                                <th class="text-center" ><strong>Quantity</strong></th>-->
+<!--                            </tr>-->
+<!--                        </thead>-->
+<!--                        <tbody>-->
+<!--                            <t t-foreach="datas" t-as='val'>-->
+<!--                                <tr>-->
+<!--                                    <td class="text-left">-->
+<!--                                        <span t-esc="val['finished_product']"/>-->
+<!--                                    </td>-->
+<!--                                    <td class="text-center">-->
+<!--                                        <span t-esc="val['qty_finished_product']"/>-->
+<!--                                    </td>-->
+<!--                                </tr>-->
+<!--                            </t>-->
+<!--                        </tbody>-->
+<!--                    </div>-->
+<!--                </table>-->
             </t>
         </t>
     </template>

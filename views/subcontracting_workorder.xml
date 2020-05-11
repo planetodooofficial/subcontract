@@ -6,13 +6,13 @@
             <field name="inherit_id" ref="mrp.mrp_production_workcenter_form_view_inherit"/>
             <field name="arch" type="xml">
                 <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
-                    <button type="action"
+                    <button type="object"
                             string="RFQ"
-                            name="%(purchase.purchase_rfq)d"
+                            name="po"
                             class="oe_stat_button"
                             icon="fa-check-circle-o"
                             attrs="{'invisible':[('is_rfq', '=', False)]}">
-                        <field name="rfq_ids" invisible="1"/>
+<!--                        <field name="rfq_ids" invisible="1"/>-->
                     </button>
                 </xpath>
                 <xpath expr="//header" position="inside">
