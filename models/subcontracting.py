@@ -169,8 +169,9 @@ class SubcontractingWorkOrder(models.Model):
                                 'move_location_wizard_id': move_location.id
                             })
                         else:
-                            raise ValidationError(_("All products don't have reserved qty available. Please reserve the qty which are needed to be consume "
-                                                    "before starting the work order."))
+                            raise ValidationError(_(
+                                "All products don't have reserved qty available. Please reserve the qty which are needed to be consume "
+                                "before starting the work order."))
                     move_location.action_move_location()
                     self.update({
                         'delivery_challan_id': move_location.picking_id.id,
@@ -238,4 +239,23 @@ class SubcontractingWorkOrder(models.Model):
         return res
 
     def print_delivery_challan(self):
-        print()
+        picking = self.delivery_challan_id
+        product_values = []
+
+        values = [{
+            'picking_id': picking.name,
+            'start_date': picking.date,
+            'end_date': picking.date_done,
+            'source_location': picking.location_id,
+            'destination_location': picking.location_dest_id,
+        }]
+        for record in picking.move_lines:
+            product_vals = {
+                'product_id': record.product_id.name,
+                'qty': record.product_qty,
+                'uom': record.product_uom.name,
+            }
+            product_values.append(product_vals)
+
+        return self.env.ref('subcontract.action_report_delivery').report_action(self, data={'values': values,
+                                                                                            'product_values': product_values})

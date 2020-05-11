@@ -2,12 +2,12 @@ from odoo import api, models
 
 
 class DeliveryChallan(models.AbstractModel):
-    _name = 'report.subcontract.report_material_issued_2'
+    _name = 'report.subcontract.report_deliveryslip'
 
     @api.model
     def get_report_values(self, docids, data):
         data = data if data is not None else {}
         return {
-            'datas': data.get('list_vals'),
-            'form_data': data.get('form_value')
+            'datas': data.get('values'),
+            'product_datas': data.get('product_values')
         }
