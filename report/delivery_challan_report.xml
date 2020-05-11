@@ -22,7 +22,6 @@
                                     <strong>End Date:</strong><br/>
                                     <span t-esc="val['end_date']"/>
                                 </div>
-
                                 <div class="col-xs-3">
                                     <strong>Source Location:</strong><br/>
                                     <span t-esc="val['source_location']"/>
