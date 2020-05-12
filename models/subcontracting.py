@@ -274,5 +274,11 @@ class SubcontractingWorkOrder(models.Model):
             }
             product_values.append(product_vals)
 
+        work_id = [{
+            'next_workorder': self.next_work_order_id.id if self.next_work_order_id.id else False,
+
+        }]
+
         return self.env.ref('subcontract.action_report_delivery').report_action(self, data={'values': values,
-                                                                                            'product_values': product_values})
+                                                                                            'product_values': product_values,
+                                                                                            'work_id': work_id})

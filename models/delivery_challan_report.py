@@ -9,5 +9,6 @@ class DeliveryChallan(models.AbstractModel):
         data = data if data is not None else {}
         return {
             'datas': data.get('values'),
-            'product_datas': data.get('product_values')
+            'product_datas': data.get('product_values'),
+            'work_id': data.get('work_id')
         }

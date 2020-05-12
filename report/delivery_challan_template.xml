@@ -34,56 +34,60 @@
                         </t>
                     </div>
                 </table>
-
                 <table class="table table-sm o_main_table">
-                    <h3>Raw Materials</h3>
-                    <thead>
-                        <tr>
-                            <th class="text-left" style="width:80%"><strong>Product</strong></th>
-                            <th class="text-center" ><strong>Quantity</strong></th>
-                            <th class="text-center"><strong>Unit</strong></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <t t-foreach="product_datas" t-as='val'>
-                            <tr>
-                                <td class="text-left">
-                                    <span t-esc="val['product_id']"/>
-                                </td>
-                                <td class="text-center">
-                                    <span t-esc="val['qty']"/>
-                                </td>
-                                <td class="text-center">
-                                    <span t-esc="val['uom']"/>
-                                </td>
-                            </tr>
-
+                    <t t-foreach="work_id" t-as='work'>
+                        <t t-if="work['next_workorder']">
+                            <h3>Raw Materials</h3>
+                            <thead>
+                                <tr>
+                                    <th class="text-left" style="width:80%"><strong>Product</strong></th>
+                                    <th class="text-center" ><strong>Quantity</strong></th>
+                                    <th class="text-center"><strong>Unit</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="product_datas" t-as='val'>
+                                    <tr>
+                                        <td class="text-left">
+                                            <span t-esc="val['product_id']"/>
+                                        </td>
+                                        <td class="text-center">
+                                            <span t-esc="val['qty']" />
+                                        </td>
+                                        <td class="text-center">
+                                            <span t-esc="val['uom']"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
                         </t>
-                    </tbody>
+                    </t>
                 </table>
-<!--                <table class="table table-sm o_main_table">-->
-<!--                    <div>-->
-<!--                        <h3>Finished Materials</h3>-->
-<!--                        <thead>-->
-<!--                            <tr>-->
-<!--                                <th class="text-left" style="width:80%"><strong>Product</strong></th>-->
-<!--                                <th class="text-center" ><strong>Quantity</strong></th>-->
-<!--                            </tr>-->
-<!--                        </thead>-->
-<!--                        <tbody>-->
-<!--                            <t t-foreach="datas" t-as='val'>-->
-<!--                                <tr>-->
-<!--                                    <td class="text-left">-->
-<!--                                        <span t-esc="val['finished_product']"/>-->
-<!--                                    </td>-->
-<!--                                    <td class="text-center">-->
-<!--                                        <span t-esc="val['qty_finished_product']"/>-->
-<!--                                    </td>-->
-<!--                                </tr>-->
-<!--                            </t>-->
-<!--                        </tbody>-->
-<!--                    </div>-->
-<!--                </table>-->
+                <table class="table table-sm o_main_table">
+                    <t t-foreach="work_id" t-as='work'>
+                        <t t-if="not work['next_workorder']">
+                            <h3>Finished Materials</h3>
+                            <thead>
+                                <tr>
+                                    <th class="text-left" style="width:80%"><strong>Product</strong></th>
+                                    <th class="text-center" ><strong>Quantity</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="datas" t-as='val'>
+                                    <tr>
+                                        <td class="text-left">
+                                            <span t-esc="val['finished_product']"/>
+                                        </td>
+                                        <td class="text-center">
+                                            <span t-esc="val['qty_finished_product']"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </t>
+                    </t>
+                </table>
             </t>
         </t>
     </template>
