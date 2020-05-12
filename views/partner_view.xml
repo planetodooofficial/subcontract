@@ -5,8 +5,10 @@
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='property_stock_supplier']" position="after">
+                <xpath expr="//page[@name='sales_purchases']" position="inside">
+                    <group string="Subcontracted Location">
                     <field name="subcontracted_location" domain="[('usage', '=', 'internal')]"/>
+                    </group>
                 </xpath>
             </field>
         </record>
