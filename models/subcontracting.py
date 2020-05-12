@@ -86,11 +86,11 @@ class MRP(models.Model):
 class SubcontractingWorkOrder(models.Model):
     _inherit = 'mrp.workorder'
 
-    is_subcontract = fields.Boolean('Subcontracting', readonly=False, store=True, default=False)
-    subcontract_wo_vendor = fields.Many2one('res.partner', 'Supplier', readonly=True, store=True)
-    subcontract_wo_product = fields.Many2one('product.template', 'Product', readonly=True, store=True)
-    subcontract_wo_service_cost = fields.Float('Cost Per Unit', readonly=True, store=True)
-    subcontract_supplier_location = fields.Many2one('stock.location', "Supplier Location", readonly=True, store=True)
+    is_subcontract = fields.Boolean('Subcontracting', store=True, default=False)
+    subcontract_wo_vendor = fields.Many2one('res.partner', 'Supplier', store=True)
+    subcontract_wo_product = fields.Many2one('product.template', 'Product', store=True)
+    subcontract_wo_service_cost = fields.Float('Cost Per Unit', store=True)
+    subcontract_supplier_location = fields.Many2one('stock.location', "Supplier Location", store=True)
 
     is_rfq = fields.Boolean('RFQ', default=False)
 
@@ -100,6 +100,17 @@ class SubcontractingWorkOrder(models.Model):
 
     delivery_challan_id = fields.Many2one('stock.picking', readonly=True, store=True)
     delivery_challan = fields.Boolean(readonly=True, store=True, default=False)
+
+    # Change Supplier Location based on Supplier.
+    @api.multi
+    @api.onchange('subcontract_wo_vendor')
+    def onchange_supplier_location(self):
+        if self.is_subcontract:
+            if self.subcontract_wo_vendor.subcontracted_location:
+                self.subcontract_supplier_location = self.subcontract_wo_vendor.subcontracted_location.id
+            else:
+                self.subcontract_supplier_location = ''
+                raise ValidationError(_("Please mention 'Subcontracted Location' for the selected Supplier."))
 
     def po(self):
         purchase_id = self.env.ref('purchase.purchase_order_form').id
@@ -222,7 +233,7 @@ class SubcontractingWorkOrder(models.Model):
                             'delivery_challan': True
                         })
 
-                        # Internal Stock Move if Previous WorkOrder ID found.
+        # Internal Stock Move if last WorkOrder.
         # 3rd Condition : - If Next WorkOrder is not available Source Location will be Picked up from the Supplier Location of Last WO and Destination
         #                   will be Picked up from Raw material Location of MO.
         for records in mrp:
@@ -230,7 +241,7 @@ class SubcontractingWorkOrder(models.Model):
                 if self.previous_workorder_id and self.previous_workorder_id.state == 'done':
                     move_location = self.env['wiz.stock.move.location'].create({
                         'origin_location_id': self.previous_workorder_id.subcontract_supplier_location.id,
-                        'destination_location_id': records.location_src_id.id
+                        'destination_location_id': self.subcontract_supplier_location.id
                     })
                     for recs in records.move_raw_ids:
                         product = self.env['product.product'].search([('name', '=', recs.product_id.name)])
@@ -238,6 +249,25 @@ class SubcontractingWorkOrder(models.Model):
                             'product_id': product.id,
                             'product_uom_id': recs.product_uom.id,
                             'origin_location_id': self.previous_workorder_id.subcontract_supplier_location.id,
+                            'destination_location_id': self.subcontract_supplier_location.id,
+                            'move_quantity': float(recs.reserved_availability) if float(
+                                recs.reserved_availability) else recs.product_uom_qty,
+                            'max_quantity': float(recs.reserved_availability) if float(
+                                recs.reserved_availability) else recs.product_uom_qty,
+                            'move_location_wizard_id': move_location.id
+                        })
+                    move_location.action_move_location()
+                if self.previous_workorder_id and self.previous_workorder_id.state == 'done':
+                    move_location = self.env['wiz.stock.move.location'].create({
+                        'origin_location_id': self.subcontract_supplier_location.id,
+                        'destination_location_id': records.location_src_id.id
+                    })
+                    for recs in records.move_raw_ids:
+                        product = self.env['product.product'].search([('name', '=', recs.product_id.name)])
+                        move_location_line = self.env['wiz.stock.move.location.line'].create({
+                            'product_id': product.id,
+                            'product_uom_id': recs.product_uom.id,
+                            'origin_location_id': self.subcontract_supplier_location.id,
                             'destination_location_id': records.location_src_id.id,
                             'move_quantity': float(recs.reserved_availability) if float(
                                 recs.reserved_availability) else recs.product_uom_qty,
@@ -250,18 +280,39 @@ class SubcontractingWorkOrder(models.Model):
                         'delivery_challan_id': move_location.picking_id.id,
                         'delivery_challan': True
                     })
+
         return res
 
     def print_delivery_challan(self):
         picking = self.delivery_challan_id
+        source_loc = ''
+        dest_loc = ''
+        if picking.location_id.partner_id.id:
+            street = str(picking.location_id.partner_id.street)
+            street2 = str(picking.location_id.partner_id.street2)
+            city = str(picking.location_id.partner_id.city)
+            state = str(picking.location_id.partner_id.state_id.name)
+            zip = str(picking.location_id.partner_id.zip)
+            country = str(picking.location_id.partner_id.country_id.name)
+            source_loc = street + ',' + street2 + ',' + city + ',' + state + ',' + zip + ',' + country + '.'
+
+        if picking.location_dest_id.partner_id.id:
+            street = str(picking.location_dest_id.partner_id.street)
+            street2 = str(picking.location_dest_id.partner_id.street2)
+            city = str(picking.location_dest_id.partner_id.city)
+            state = str(picking.location_dest_id.partner_id.state_id.name)
+            zip = str(picking.location_dest_id.partner_id.zip)
+            country = str(picking.location_dest_id.partner_id.country_id.name)
+            dest_loc = street + ',' + street2 + ',' + city + ',' + state + ',' + zip + ',' + country + '.'
+
         product_values = []
 
         values = [{
             'picking_id': picking.name,
             'start_date': picking.date,
             'end_date': picking.date_done,
-            'source_location': picking.location_id.name,
-            'destination_location': picking.location_dest_id.name,
+            'source_location': source_loc if source_loc else picking.location_id.display_name,
+            'destination_location': dest_loc if dest_loc else picking.location_dest_id.display_name,
             'next_workorder_id': self.next_work_order_id.id if self.next_work_order_id.id else False,
             'finished_product': self.product_id.name,
             'qty_finished_product': self.qty_produced

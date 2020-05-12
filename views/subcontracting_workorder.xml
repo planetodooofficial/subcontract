@@ -28,10 +28,10 @@
                 <xpath expr="//notebook/page[3]" position="after">
                     <page string="Subcontracting Info" attrs="{'invisible': [('is_subcontract', '!=', True)]}">
                         <group>
-                            <field name="subcontract_wo_vendor"/>
-                            <field name="subcontract_wo_product" domain="[('type', '=', 'service')]"/>
-                            <field name="subcontract_wo_service_cost"/>
-                            <field name="subcontract_supplier_location"/>
+                            <field name="subcontract_wo_vendor" attrs="{'readonly': [('state', '=', 'progress')]}"/>
+                            <field name="subcontract_wo_product" domain="[('type', '=', 'service')]" attrs="{'readonly': [('state', '=', 'progress')]}"/>
+                            <field name="subcontract_wo_service_cost" attrs="{'readonly': [('state', '=', 'progress')]}"/>
+                            <field name="subcontract_supplier_location" attrs="{'readonly': [('state', '=', 'progress')]}"/>
                             <field name="delivery_challan_id" string="Internal Transfer"/>
                         </group>
                     </page>
