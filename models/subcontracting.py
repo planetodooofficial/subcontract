@@ -288,22 +288,22 @@ class SubcontractingWorkOrder(models.Model):
         source_loc = ''
         dest_loc = ''
         if picking.location_id.partner_id.id:
-            street = str(picking.location_id.partner_id.street)
-            street2 = str(picking.location_id.partner_id.street2)
-            city = str(picking.location_id.partner_id.city)
-            state = str(picking.location_id.partner_id.state_id.name)
-            zip = str(picking.location_id.partner_id.zip)
-            country = str(picking.location_id.partner_id.country_id.name)
-            source_loc = street + ',' + street2 + ',' + city + ',' + state + ',' + zip + ',' + country + '.'
+            street = str(picking.location_id.partner_id.street) or ''
+            street2 = str(picking.location_id.partner_id.street2) or ''
+            city = str(picking.location_id.partner_id.city) or ''
+            state = str(picking.location_id.partner_id.state_id.name) or ''
+            zip = str(picking.location_id.partner_id.zip) or ''
+            country = str(picking.location_id.partner_id.country_id.name) or ''
+            source_loc = street + ',' + ' ' + street2 + ',' + ' ' + city + ',' + ' ' + state + ',' + ' ' + zip + ',' + ' ' + country + '.'
 
         if picking.location_dest_id.partner_id.id:
-            street = str(picking.location_dest_id.partner_id.street)
-            street2 = str(picking.location_dest_id.partner_id.street2)
-            city = str(picking.location_dest_id.partner_id.city)
-            state = str(picking.location_dest_id.partner_id.state_id.name)
-            zip = str(picking.location_dest_id.partner_id.zip)
-            country = str(picking.location_dest_id.partner_id.country_id.name)
-            dest_loc = street + ',' + street2 + ',' + city + ',' + state + ',' + zip + ',' + country + '.'
+            dest_street = str(picking.location_dest_id.partner_id.street) or ''
+            dest_street2 = str(picking.location_dest_id.partner_id.street2) or ''
+            dest_city = str(picking.location_dest_id.partner_id.city) or ''
+            dest_state = str(picking.location_dest_id.partner_id.state_id.name) or ''
+            dest_zip = str(picking.location_dest_id.partner_id.zip) or ''
+            dest_country = str(picking.location_dest_id.partner_id.country_id.name) or ''
+            dest_loc = dest_street + ',' + ' ' + dest_street2 + ',' + ' ' + dest_city + ',' + ' ' + dest_state + ',' + ' ' + dest_zip + ',' + ' ' + dest_country + '.'
 
         product_values = []
 
@@ -312,7 +312,9 @@ class SubcontractingWorkOrder(models.Model):
             'start_date': picking.date,
             'end_date': picking.date_done,
             'source_location': source_loc if source_loc else picking.location_id.display_name,
+            'source_vendor': picking.location_id.display_name,
             'destination_location': dest_loc if dest_loc else picking.location_dest_id.display_name,
+            'dest_vendor': picking.location_dest_id.display_name,
             'next_workorder_id': self.next_work_order_id.id if self.next_work_order_id.id else False,
             'finished_product': self.product_id.name,
             'qty_finished_product': self.qty_produced

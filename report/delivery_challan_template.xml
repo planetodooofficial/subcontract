@@ -12,23 +12,33 @@
                                 <div class="col-xs-12">
                                     <h2>Delivery Challan for # : <span t-esc="val['picking_id']"/></h2>
                                 </div>
+                                <div class="col-xs-12">
+                                    <h2></h2>
+                                </div>
+                                <div class="col-xs-12">
+                                    <strong>Source Location:</strong>
+                                    <span t-esc="val['source_vendor']"/><br/>
+                                    <strong>Address:</strong>
+                                    <span t-esc="val['source_location']"/>
+                                </div>
+                                <div class="col-xs-12">
+                                    <h2></h2>
+                                </div>
+                                <div class="col-xs-12">
+                                    <strong>Destination Location:</strong>
+                                    <span t-esc="val['dest_vendor']"/><br/>
+                                    <strong>Address: </strong>
+                                    <span t-esc="val['destination_location']"/>
+                                </div>
                             </div>
                             <div class="row mt32 mb32">
                                 <div class="col-xs-3">
-                                    <strong>Created Date:</strong><br/>
+                                    <strong>Create Date:</strong><br/>
                                     <span t-esc="val['start_date']"/>
                                 </div>
                                 <div class="col-xs-3">
                                     <strong>End Date:</strong><br/>
                                     <span t-esc="val['end_date']"/>
-                                </div>
-                                <div class="col-xs-3">
-                                    <strong>Source Location:</strong><br/>
-                                    <span t-esc="val['source_location']"/>
-                                </div>
-                                <div class="col-xs-3">
-                                    <strong>Destination Location:</strong><br/>
-                                    <span t-esc="val['destination_location']"/>
                                 </div>
                             </div>
                         </t>
