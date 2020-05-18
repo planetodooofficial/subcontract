@@ -19,7 +19,9 @@
                                     <strong>Source Location:</strong>
                                     <span t-esc="val['source_vendor']"/><br/>
                                     <strong>Address:</strong>
-                                    <span t-esc="val['source_location']"/>
+                                    <span t-esc="val['source_location']"/><br/>
+                                    <strong>GST:</strong>
+                                    <span t-esc="val['source_gst']"/>
                                 </div>
                                 <div class="col-xs-12">
                                     <h2></h2>
@@ -28,7 +30,9 @@
                                     <strong>Destination Location:</strong>
                                     <span t-esc="val['dest_vendor']"/><br/>
                                     <strong>Address: </strong>
-                                    <span t-esc="val['destination_location']"/>
+                                    <span t-esc="val['destination_location']"/><br/>
+                                    <strong>GST:</strong>
+                                    <span t-esc="val['dest_gst']"/>
                                 </div>
                             </div>
                             <div class="row mt32 mb32">

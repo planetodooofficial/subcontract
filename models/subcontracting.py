@@ -168,48 +168,89 @@ class SubcontractingWorkOrder(models.Model):
                     _("Please finish the 'In Progress' Work Order first to proceed with the next one."))
             else:
                 pass
+        if not self.is_rfq:
+            raise ValidationError(_("Please generate RFQ. Then start the work order."))
+
+        if self.delivery_challan_id.state != 'done':
+            raise ValidationError(_("Raw materials not release to vendor."))
+
         res = super(SubcontractingWorkOrder, self).button_start()
+        return res
 
-        # Internal Stock Move if No Previous WorkOrder ID found.
-        # 1st Condition : If 1st workorder then Source Location will be from MO and Destination Location will be from WorkOrder Supplier Location.
-        for records in mrp:
-            if self.next_work_order_id:
-                if not self.previous_workorder_id:
-                    move_location = self.env['wiz.stock.move.location'].create({
-                        'origin_location_id': records.location_src_id.id,
-                        'destination_location_id': self.subcontract_supplier_location.id
-                    })
-                    for recs in records.move_raw_ids:
-                        if recs.reserved_availability == recs.product_uom_qty:
-                            product = self.env['product.product'].search([('name', '=', recs.product_id.name)])
-                            move_location_line = self.env['wiz.stock.move.location.line'].create({
-                                'product_id': product.id,
-                                'product_uom_id': recs.product_uom.id,
-                                'origin_location_id': records.location_src_id.id,
-                                'destination_location_id': self.subcontract_supplier_location.id,
-                                'move_quantity': float(recs.reserved_availability) if float(
-                                    recs.reserved_availability) else 0.0,
-                                'max_quantity': float(recs.reserved_availability) if float(
-                                    recs.reserved_availability) else 0.0,
-                                'move_location_wizard_id': move_location.id
+    def create_delivery_challan(self):
+        purchase = self.env['purchase.order'].search([('name', '=', self.rfq_ids.name)]).id
+        if purchase:
+            mrp = self.env['mrp.production'].search([('name', '=', self.production_id.name)])
+
+            # Internal Stock Move if No Previous WorkOrder ID found.
+            # 1st Condition : If 1st workorder then Source Location will be from MO and Destination Location will be from WorkOrder Supplier Location.
+            for records in mrp:
+                if self.next_work_order_id:
+                    if not self.previous_workorder_id:
+                        move_location = self.env['wiz.stock.move.location'].create({
+                            'origin_location_id': records.location_src_id.id,
+                            'destination_location_id': self.subcontract_supplier_location.id
+                        })
+                        for recs in records.move_raw_ids:
+                            if recs.reserved_availability == recs.product_uom_qty:
+                                product = self.env['product.product'].search([('name', '=', recs.product_id.name)])
+                                move_location_line = self.env['wiz.stock.move.location.line'].create({
+                                    'product_id': product.id,
+                                    'product_uom_id': recs.product_uom.id,
+                                    'origin_location_id': records.location_src_id.id,
+                                    'destination_location_id': self.subcontract_supplier_location.id,
+                                    'move_quantity': float(recs.reserved_availability) if float(
+                                        recs.reserved_availability) else 0.0,
+                                    'max_quantity': float(recs.reserved_availability) if float(
+                                        recs.reserved_availability) else 0.0,
+                                    'move_location_wizard_id': move_location.id
+                                })
+                            else:
+                                raise ValidationError(_(
+                                    "All products don't have reserved qty available. Please reserve the qty which are needed to be consume "
+                                    "before starting the work order."))
+                        move_location.action_move_location()
+                        self.update({
+                            'delivery_challan_id': move_location.picking_id.id,
+                            'delivery_challan': True
+                        })
+
+            # Internal Stock Move if Previous WorkOrder ID found.
+            # 2nd Condition : If Source Location and Destination Location is different then Source Location will be from Previous WO and Destination Location
+            #                 will be from current WO.
+            for records in mrp:
+                if self.next_work_order_id:
+                    if self.previous_workorder_id and self.previous_workorder_id.state == 'done':
+                        if self.previous_workorder_id.subcontract_supplier_location.id != self.subcontract_supplier_location.id:
+                            move_location = self.env['wiz.stock.move.location'].create({
+                                'origin_location_id': self.previous_workorder_id.subcontract_supplier_location.id,
+                                'destination_location_id': self.subcontract_supplier_location.id
                             })
-                        else:
-                            raise ValidationError(_(
-                                "All products don't have reserved qty available. Please reserve the qty which are needed to be consume "
-                                "before starting the work order."))
-                    move_location.action_move_location()
-                    self.update({
-                        'delivery_challan_id': move_location.picking_id.id,
-                        'delivery_challan': True
-                    })
+                            for recs in records.move_raw_ids:
+                                product = self.env['product.product'].search([('name', '=', recs.product_id.name)])
+                                move_location_line = self.env['wiz.stock.move.location.line'].create({
+                                    'product_id': product.id,
+                                    'product_uom_id': recs.product_uom.id,
+                                    'origin_location_id': self.previous_workorder_id.subcontract_supplier_location.id,
+                                    'destination_location_id': self.subcontract_supplier_location.id,
+                                    'move_quantity': float(recs.reserved_availability) if float(
+                                        recs.reserved_availability) else recs.product_uom_qty,
+                                    'max_quantity': float(recs.reserved_availability) if float(
+                                        recs.reserved_availability) else recs.product_uom_qty,
+                                    'move_location_wizard_id': move_location.id
+                                })
+                            move_location.action_move_location()
+                            self.update({
+                                'delivery_challan_id': move_location.picking_id.id,
+                                'delivery_challan': True
+                            })
 
-        # Internal Stock Move if Previous WorkOrder ID found.
-        # 2nd Condition : If Source Location and Destination Location is different then Source Location will be from Previous WO and Destination Location
-        #                 will be from current WO.
-        for records in mrp:
-            if self.next_work_order_id:
-                if self.previous_workorder_id and self.previous_workorder_id.state == 'done':
-                    if self.previous_workorder_id.subcontract_supplier_location.id != self.subcontract_supplier_location.id:
+            # Internal Stock Move if last WorkOrder.
+            # 3rd Condition : - If Next WorkOrder is not available Source Location will be Picked up from the Supplier Location of Last WO and Destination
+            #                   will be Picked up from Raw material Location of MO.
+            for records in mrp:
+                if not self.next_work_order_id:
+                    if self.previous_workorder_id and self.previous_workorder_id.state == 'done':
                         move_location = self.env['wiz.stock.move.location'].create({
                             'origin_location_id': self.previous_workorder_id.subcontract_supplier_location.id,
                             'destination_location_id': self.subcontract_supplier_location.id
@@ -228,65 +269,38 @@ class SubcontractingWorkOrder(models.Model):
                                 'move_location_wizard_id': move_location.id
                             })
                         move_location.action_move_location()
+                    if self.previous_workorder_id and self.previous_workorder_id.state == 'done':
+                        move_location = self.env['wiz.stock.move.location'].create({
+                            'origin_location_id': self.subcontract_supplier_location.id,
+                            'destination_location_id': records.location_src_id.id
+                        })
+                        for recs in records.move_raw_ids:
+                            product = self.env['product.product'].search([('name', '=', recs.product_id.name)])
+                            move_location_line = self.env['wiz.stock.move.location.line'].create({
+                                'product_id': product.id,
+                                'product_uom_id': recs.product_uom.id,
+                                'origin_location_id': self.subcontract_supplier_location.id,
+                                'destination_location_id': records.location_src_id.id,
+                                'move_quantity': float(recs.reserved_availability) if float(
+                                    recs.reserved_availability) else recs.product_uom_qty,
+                                'max_quantity': float(recs.reserved_availability) if float(
+                                    recs.reserved_availability) else recs.product_uom_qty,
+                                'move_location_wizard_id': move_location.id
+                            })
+                        move_location.action_move_location()
                         self.update({
                             'delivery_challan_id': move_location.picking_id.id,
                             'delivery_challan': True
                         })
-
-        # Internal Stock Move if last WorkOrder.
-        # 3rd Condition : - If Next WorkOrder is not available Source Location will be Picked up from the Supplier Location of Last WO and Destination
-        #                   will be Picked up from Raw material Location of MO.
-        for records in mrp:
-            if not self.next_work_order_id:
-                if self.previous_workorder_id and self.previous_workorder_id.state == 'done':
-                    move_location = self.env['wiz.stock.move.location'].create({
-                        'origin_location_id': self.previous_workorder_id.subcontract_supplier_location.id,
-                        'destination_location_id': self.subcontract_supplier_location.id
-                    })
-                    for recs in records.move_raw_ids:
-                        product = self.env['product.product'].search([('name', '=', recs.product_id.name)])
-                        move_location_line = self.env['wiz.stock.move.location.line'].create({
-                            'product_id': product.id,
-                            'product_uom_id': recs.product_uom.id,
-                            'origin_location_id': self.previous_workorder_id.subcontract_supplier_location.id,
-                            'destination_location_id': self.subcontract_supplier_location.id,
-                            'move_quantity': float(recs.reserved_availability) if float(
-                                recs.reserved_availability) else recs.product_uom_qty,
-                            'max_quantity': float(recs.reserved_availability) if float(
-                                recs.reserved_availability) else recs.product_uom_qty,
-                            'move_location_wizard_id': move_location.id
-                        })
-                    move_location.action_move_location()
-                if self.previous_workorder_id and self.previous_workorder_id.state == 'done':
-                    move_location = self.env['wiz.stock.move.location'].create({
-                        'origin_location_id': self.subcontract_supplier_location.id,
-                        'destination_location_id': records.location_src_id.id
-                    })
-                    for recs in records.move_raw_ids:
-                        product = self.env['product.product'].search([('name', '=', recs.product_id.name)])
-                        move_location_line = self.env['wiz.stock.move.location.line'].create({
-                            'product_id': product.id,
-                            'product_uom_id': recs.product_uom.id,
-                            'origin_location_id': self.subcontract_supplier_location.id,
-                            'destination_location_id': records.location_src_id.id,
-                            'move_quantity': float(recs.reserved_availability) if float(
-                                recs.reserved_availability) else recs.product_uom_qty,
-                            'max_quantity': float(recs.reserved_availability) if float(
-                                recs.reserved_availability) else recs.product_uom_qty,
-                            'move_location_wizard_id': move_location.id
-                        })
-                    move_location.action_move_location()
-                    self.update({
-                        'delivery_challan_id': move_location.picking_id.id,
-                        'delivery_challan': True
-                    })
-
-        return res
+        else:
+            raise ValidationError(_("NO RFQ found!"))
 
     def print_delivery_challan(self):
         picking = self.delivery_challan_id
         source_loc = ''
         dest_loc = ''
+        source_gst = ''
+        dest_gst = ''
         if picking.location_id.partner_id.id:
             street = str(picking.location_id.partner_id.street) or ''
             street2 = str(picking.location_id.partner_id.street2) or ''
@@ -294,6 +308,7 @@ class SubcontractingWorkOrder(models.Model):
             state = str(picking.location_id.partner_id.state_id.name) or ''
             zip = str(picking.location_id.partner_id.zip) or ''
             country = str(picking.location_id.partner_id.country_id.name) or ''
+            source_gst = str(picking.location_id.partner_id.vat) or ''
             source_loc = street + ',' + ' ' + street2 + ',' + ' ' + city + ',' + ' ' + state + ',' + ' ' + zip + ',' + ' ' + country + '.'
 
         if picking.location_dest_id.partner_id.id:
@@ -303,6 +318,7 @@ class SubcontractingWorkOrder(models.Model):
             dest_state = str(picking.location_dest_id.partner_id.state_id.name) or ''
             dest_zip = str(picking.location_dest_id.partner_id.zip) or ''
             dest_country = str(picking.location_dest_id.partner_id.country_id.name) or ''
+            dest_gst = str(picking.location_dest_id.partner_id.vat) or ''
             dest_loc = dest_street + ',' + ' ' + dest_street2 + ',' + ' ' + dest_city + ',' + ' ' + dest_state + ',' + ' ' + dest_zip + ',' + ' ' + dest_country + '.'
 
         product_values = []
@@ -317,7 +333,9 @@ class SubcontractingWorkOrder(models.Model):
             'dest_vendor': picking.location_dest_id.display_name,
             'next_workorder_id': self.next_work_order_id.id if self.next_work_order_id.id else False,
             'finished_product': self.product_id.name,
-            'qty_finished_product': self.qty_produced
+            'qty_finished_product': self.qty_produced,
+            'source_gst': source_gst,
+            'dest_gst': dest_gst
         }]
         for record in picking.move_lines:
             product_vals = {
