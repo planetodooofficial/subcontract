@@ -126,7 +126,7 @@ class SubcontractingWorkOrder(models.Model):
             'target': 'current',
         }
 
-    # Create RFQ for work order and product inside the work order.
+    # Create RFQ for work order with products available from the work order.
     def create_rfq(self):
         receipt = self.env['stock.picking.type'].search([('name', '=', 'Receipts')], limit=1)
         product = self.env['product.product'].search([('name', '=', self.subcontract_wo_product.name)])
@@ -209,6 +209,7 @@ class SubcontractingWorkOrder(models.Model):
                                 raise ValidationError(_(
                                     "All products don't have reserved qty available. Please reserve the qty which are needed to be consume "
                                     "before starting the work order."))
+                        records.button_unreserve()
                         move_location.action_move_location()
                         self.update({
                             'delivery_challan_id': move_location.picking_id.id,
@@ -269,6 +270,10 @@ class SubcontractingWorkOrder(models.Model):
                                 'move_location_wizard_id': move_location.id
                             })
                         move_location.action_move_location()
+                        move_location.picking_id.action_confirm()
+                        move_location.picking_id.action_assign()
+                        move_location.picking_id.button_validate()
+
                     if self.previous_workorder_id and self.previous_workorder_id.state == 'done':
                         move_location = self.env['wiz.stock.move.location'].create({
                             'origin_location_id': self.subcontract_supplier_location.id,
@@ -295,6 +300,7 @@ class SubcontractingWorkOrder(models.Model):
         else:
             raise ValidationError(_("NO RFQ found!"))
 
+    # Delivery Report Values
     def print_delivery_challan(self):
         picking = self.delivery_challan_id
         source_loc = ''
