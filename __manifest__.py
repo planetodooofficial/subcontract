@@ -12,13 +12,14 @@
     'depends': ['base', 'mrp', 'sale', 'purchase', 'stock', 'contacts', 'product', 'mail'],
     'data': [
         # 'security/ir.model.access.csv',
+        'report/delivery_challan_template.xml',
+        'report/report_views.xml',
         'wizard/stock_move_location.xml',
         'views/subcontracting_view.xml',
         'views/subcontracting_workorder.xml',
         'views/partner_view.xml',
         'views/purchase_view.xml',
-        'report/delivery_challan_template.xml',
-        'report/report_views.xml',
+
     ],
     'demo': [],
     'images': [],
