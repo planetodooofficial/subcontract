@@ -322,11 +322,22 @@ class SubcontractingWorkOrder(models.Model):
         #     dest_country = str(picking.location_dest_id.partner_id.country_id.name) or ''
         #     dest_gst = str(picking.location_dest_id.partner_id.vat) or ''
         #     dest_loc = dest_street + ',' + ' ' + dest_street2 + ',' + ' ' + dest_city + ',' + ' ' + dest_state + ',' + ' ' + dest_zip + ',' + ' ' + dest_country + '.'
+        product_vals = []
+        product_val = {}
         values = []
+        total_qty = 0
         for record in picking.move_lines:
-            total_qty = 0
             if record.product_qty:
                 total_qty += 1
+            product_val = {
+                # Product
+                'product_id': record.product_id.name,
+                'qty': record.product_qty,
+                'uom': record.product_uom.name,
+                'rate': record.product_id.standard_price,
+                'hsn': record.product_id.l10n_in_hsn_code,
+            }
+            product_vals.append(product_val)
         val = {
             # Source Location
             'partner_name': str(picking.location_id.partner_id.name),
@@ -358,16 +369,10 @@ class SubcontractingWorkOrder(models.Model):
             'next_workorder_id': self.next_work_order_id.id if self.next_work_order_id.id else False,
             'finished_product': self.product_id.name,
             'qty_finished_product': self.qty_produced,
-            # Product
-            'product_id': record.product_id.name,
-            'qty': record.product_qty,
-            'total': total_qty,
-            'uom': record.product_uom.name,
-            'rate': record.product_id.standard_price,
-            'hsn': record.product_id.l10n_in_hsn_code,
             # Work Id
             'next_workorder': self.next_work_order_id.id if self.next_work_order_id.id else False,
+            'total': total_qty,
         }
         values.append(val)
 
-        return self.env.ref('subcontract.action_report_delivery').report_action(self, data={'values': values})
+        return self.env.ref('subcontract.action_report_delivery').report_action(self, data={'values': values, 'product_values': product_vals})
