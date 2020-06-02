@@ -23,39 +23,42 @@
                 border-right: 1px solid black;
                 border-bottom: 1px solid black;
                 border-top: 1px solid black;
-                font-family: times, serif; font-size:8.5pt;
+                font-family: times, serif; font-size:7.5pt;
                 }
                 tr{
                 border-left: 1px solid black;
                 border-right: 1px solid black;
                 border-bottom: 1px solid black;
                 border-top: 1px solid black;
-                font-family: times, serif; font-size:8.5pt;
+                font-family: times, serif; font-size:7.5pt;
                 }
                 tr.tr-new {
                 border-left: 1px solid black;
                 border-right: 1px solid black;
 
                 border-top: 1px solid black;
-                font-family: times, serif; font-size:8.5pt;
+                font-family: times, serif; font-size:7.5pt;
+                }
+                div.page{
+                page-break-inside: avoid;
                 }
 
             </style>
-            <t t-foreach="datas" t-as='val'>
-                <div class="page">
-                    <div class="oe_structure"/>
-                    <div class="row" style="text-align:center">
-                        <table>
+            <div class="page">
+                <div class="oe_structure"/>
+                <div class="row" style="text-align:center">
+                    <table>
+                        <t t-foreach="datas" t-as='val'>
                             <tr style="width:100%;">
-                                <td style="padding:2px;" colspan="4">
+                                <td style="padding:1px;" colspan="4">
                                     <strong><p style="text-align:center;">JOB WORK CHALLAN</p></strong>
                                 </td>
-                                <td style="padding:2px;" colspan="2">
+                                <td style="padding:1px;" colspan="2">
                                     <strong><p style="text-align:center;">Original</p></strong>
                                 </td>
                             </tr>
                             <tr style="width:100%;">
-                                <td  style="padding:2px;" colspan="6">
+                                <td  style="padding:1px;" colspan="6">
                                     <strong><p style="text-align:center;">[Made under Section 143 of Central Goods and Service Tax Act, 2017 read with Rule 55(b) of Central Goods and Services Tax Rules, 2017</p></strong>
                                 </td>
                             </tr>
@@ -65,93 +68,100 @@
                                 </td>
                             </tr>
                             <tr style="width:100%;">
-                                <td style="padding:2px;" colspan="2">
+                                <td style="padding:1px;" colspan="2">
                                     <strong><p style="text-align:left;">Name and Address of Consigner [Registered Person/Principal]</p></strong>
                                 </td>
-                                <td style="padding:2px;" colspan="4">
+                                <td style="padding:1px;" colspan="4">
                                     <strong><p style="text-align:left;">Name and Address of the Job worker[Consignee]</p></strong>
                                 </td>
                             </tr>
                             <tr style="width:100%;">
-                                <td style="padding:2px;" rowspan="2" colspan="2">
-                                    <span t-esc="val['source_location']"/>
+                                <td style="padding:1px;" rowspan="2" colspan="2">
+                                    <strong><span style="text-align:left;" t-esc="val['partner_name']"/></strong><br/>
+                                    <span style="text-align:left;" t-esc="val['street']"/><br/>
+                                    <span style="text-align:left;" t-esc="val['street2']"/> <span style="text-align:left;" t-esc="val['city']"/><br/>
+                                    State: <span style="text-align:left;" t-esc="val['state']"/> Pin: <span style="text-align:left;" t-esc="val['zip']"/>
                                 </td>
-                                <td style="padding:2px;" colspan="4">
-                                    <span t-esc="val['destination_location']"/><br/>
+                                <td style="padding:1px;" colspan="4">
+                                    <strong><span style="text-align:left;" t-esc="val['partner_name_dest']"/></strong><br/>
+                                    <span style="text-align:left;" t-esc="val['dest_street']"/><br/>
+                                    <span style="text-align:left;" t-esc="val['dest_street2']"/> <span style="text-align:left;" t-esc="val['dest_city']"/><br/>
+                                    State: <span style="text-align:left;" t-esc="val['dest_state']"/> Pin: <span style="text-align:left;" t-esc="val['dest_zip']"/><br/>
+                                    Contact: <span style="text-align:left;" t-esc="val['contact']"/>/<span style="text-align:left;" t-esc="val['mobile']"/>
                                 </td>
                             </tr>
                             <tr style="width:100%;">
-                                <td style="padding:2px;" colspan="1">
+                                <td style="padding:1px;" colspan="1">
                                     <strong><p style="text-align:left;">Place of Supply</p></strong>
                                 </td>
-                                <td style="padding:2px;" colspan="3">
+                                <td style="padding:1px;" colspan="3">
                                     <p style="text-align:left;">Pune</p>
                                 </td>
                             </tr>
                             <tr style="width:100%;">
-                                <td style="padding:2px;" colspan="2">
+                                <td style="padding:1px;" colspan="2">
                                     <strong><p style="text-align:left;">GSTIN No of the Consigner [Registered Person]</p></strong>
                                 </td>
-                                <td style="padding:2px;" colspan="2">
+                                <td style="padding:1px;" colspan="3">
                                     <strong><p style="text-align:left;">GSTIN No of the Job-Worker[If Registered]</p></strong>
                                 </td>
-                                <td style="padding:2px;" colspan="2">
+                                <td style="padding:1px;" colspan="1">
                                     <strong><p style="text-align:left;">Vendor Code</p></strong>
                                 </td>
                             </tr>
                             <tr style="width:100%;">
-                                <td style="padding:2px;" colspan="2">
-                                    <span t-esc="val['source_gst']"/>
+                                <td style="padding:1px;" colspan="2">
+                                    <span style="text-align:left;" t-esc="val['source_gst']"/>
                                 </td>
-                                <td style="padding:2px;" colspan="2">
-                                    <span t-esc="val['dest_gst']"/>
+                                <td style="padding:1px;" colspan="3">
+                                    <span style="text-align:left;" t-esc="val['dest_gst']"/>
                                 </td>
-                                <td style="padding:2px;" colspan="2">
-                                    <span> </span>
+                                <td style="padding:1px;" colspan="1">
+                                    <span></span>
                                 </td>
                             </tr>
                             <tr style="width:100%;" >
-                                <td style="padding:2px;" colspan="1">
+                                <td style="padding:1px;" colspan="1">
                                     <span></span>
                                 </td>
-                                <td style="padding:2px;" colspan="1">
+                                <td style="padding:1px;" colspan="1">
                                     <span></span>
                                 </td>
-                                <td style="padding:2px;" colspan="1">
+                                <td style="padding:1px;" colspan="1">
                                     <span></span>
                                 </td>
-                                <td style="padding:2px;" colspan="2">
-                                    <strong><p style="text-align:center;">CHALLAN NO</p></strong>
+                                <td style="padding:1px;" colspan="2">
+                                    <strong><p style="text-align:right;">CHALLAN NO</p></strong>
                                 </td>
-                                <td style="padding:2px;" colspan="1">
-                                    <strong><p style="text-align:center;"> </p></strong>
+                                <td style="padding:1px;" colspan="1">
+                                    <strong><p style="text-align:left;">TT/20-21/006</p></strong>
                                 </td>
                             </tr>
                             <tr style="width:100%;">
-                                <td style="padding:2px;" colspan="1">
+                                <td style="padding:1px;" colspan="1">
                                     <strong><p style="text-align:center;">PAN NO of Registered Person [Consigner]</p></strong>
                                 </td>
-                                <td style="padding:2px;" colspan="2">
+                                <td style="padding:1px;" colspan="2">
                                     <strong><p style="text-align:center;">PAN NO of Registered Person [Consignee]</p></strong>
                                 </td>
-                                <td style="padding:2px;" colspan="2">
-                                    <strong><p style="text-align:center;">CHALLAN DATE</p></strong>
+                                <td style="padding:1px;" colspan="2">
+                                    <strong><p style="text-align:right;">CHALLAN DATE</p></strong>
                                 </td>
-                                <td style="padding:2px;" colspan="1">
-                                    <strong><p style="text-align:center;">29/05/2020</p></strong>
+                                <td style="padding:1px;" colspan="1">
+                                    <strong><span style="text-align:left;" t-esc="val['date']"/></strong>
                                 </td>
                             </tr>
                             <tr style="width:100%;">
-                                <td style="padding:2px;" colspan="1">
+                                <td style="padding:1px;" colspan="1">
                                     <strong><p style="text-align:center;"> </p></strong>
                                 </td>
-                                <td style="padding:2px;" colspan="2">
+                                <td style="padding:1px;" colspan="2">
                                     <strong><p style="text-align:center;"> </p></strong>
                                 </td>
-                                <td style="padding:2px;" colspan="2">
-                                    <strong><p style="text-align:center;">Time of issue</p></strong>
+                                <td style="padding:1px;" colspan="2">
+                                    <strong><p style="text-align:right;">Time of issue</p></strong>
                                 </td>
-                                <td style="padding:2px;" colspan="1">
+                                <td style="padding:1px;" colspan="1">
                                     <strong><p style="text-align:center;"> </p></strong>
                                 </td>
                             </tr>
@@ -161,135 +171,135 @@
                                 </td>
                             </tr>
                             <tr style="width:100%;">
-                                <td style="padding:2px;" colspan="1">
+                                <td style="padding:2px;width:10%;" colspan="1">
                                     <strong><p style="text-align:center;">HSN Code of the Goods</p></strong>
                                 </td>
-                                <td style="padding:2px;" colspan="1">
+                                <td style="padding:2px;width:50%;" colspan="1">
                                     <strong><p style="text-align:center;">Description of the goods / Part No, Identification No etc.</p></strong>
                                 </td>
-                                <td style="padding:2px;" colspan="1">
+                                <td style="padding:2px;width:10%;" colspan="1">
                                     <strong><p style="text-align:center;">QUANTITY</p></strong>
                                 </td>
-                                <td style="padding:2px;" colspan="1">
+                                <td style="padding:1px;" colspan="1">
                                     <strong><p style="text-align:center;">UOM</p></strong>
                                 </td>
-                                <td style="padding:2px;" colspan="1">
+                                <td style="padding:1px;" colspan="1">
                                     <strong><p style="text-align:center;">RATE</p></strong>
                                 </td>
-                                <td style="padding:2px;" colspan="1">
+                                <td style="padding:1px;" colspan="1">
                                     <strong><p style="text-align:center;">Total</p></strong>
                                 </td>
                             </tr>
                             <tr style="width:100%;">
-                                <td style="padding:2px;" colspan="1">
-                                    <strong><p style="text-align:center;"> </p></strong>
+                                <td style="padding:2px;text-align:center;" colspan="1">
+                                    <span t-esc="val['hsn']"/>
                                 </td>
-                                <td style="padding:2px;" colspan="1">
-                                    <strong><p style="text-align:center;"> </p></strong>
+                                <td style="padding:2px;text-align:center;" colspan="1">
+                                    <span t-esc="val['product_id']"/>
                                 </td>
-                                <td style="padding:2px;" colspan="1">
-                                    <strong><p style="text-align:center;"> </p></strong>
+                                <td style="padding:2px;text-align:center;" colspan="1">
+                                    <span t-esc="val['qty']"/>
                                 </td>
-                                <td style="padding:2px;" colspan="1">
-                                    <strong><p style="text-align:center;"> </p></strong>
+                                <td style="padding:2px;text-align:center;" colspan="1">
+                                    <span t-esc="val['uom']"/>
                                 </td>
-                                <td style="padding:2px;" colspan="1">
-                                    <strong><p style="text-align:center;"> </p></strong>
+                                <td style="padding:2px;text-align:center;" colspan="1">
+                                    <span t-esc="val['rate']"/>
                                 </td>
-                                <td style="padding:2px;" colspan="1">
-                                    <strong><p style="text-align:center;"> </p></strong>
-                                </td>
-                            </tr>
-                            <tr style="width:100%;">
-                                <td style="padding:2px;" colspan="1">
-                                    <strong><p style="text-align:center;"> </p></strong>
-                                </td>
-                                <td style="padding:2px;" colspan="1">
-                                    <strong><p style="text-align:center;">Total</p></strong>
-                                </td>
-                                <td style="padding:2px;" colspan="1">
-                                    <strong><p style="text-align:center;">QTY</p></strong>
-                                </td>
-                                <td style="padding:2px;" colspan="1">
-                                    <strong><p style="text-align:center;"> </p></strong>
-                                </td>
-                                <td style="padding:2px;" colspan="1">
-                                    <strong><p style="text-align:center;"> </p></strong>
-                                </td>
-                                <td style="padding:2px;" colspan="1">
-                                    <strong><p style="text-align:center;"> </p></strong>
+                                <td style="padding:2px;text-align:center;" colspan="1">
+                                  <span t-esc="val['rate']"/>
                                 </td>
                             </tr>
                             <tr style="width:100%;">
-                                <td style="padding:2px;" colspan="2">
+                                <td style="padding:1px;" colspan="1">
+                                    <strong><p style="text-align:center;"></p></strong>
+                                </td>
+                                <td style="padding:1px;" colspan="1">
+                                    <strong><p style="text-align:left;">Total</p></strong>
+                                </td>
+                                <td style="padding:2px;text-align:center;" colspan="1">
+                                    <strong><span t-esc="val['total']"/></strong>
+                                </td>
+                                <td style="padding:1px;" colspan="1">
+                                    <strong><p style="text-align:center;"></p></strong>
+                                </td>
+                                <td style="padding:1px;" colspan="1">
+                                    <strong><p style="text-align:center;"></p></strong>
+                                </td>
+                                <td style="padding:2px;text-align:center;" colspan="1">
+                                    <strong><span t-esc="val['rate']"/></strong>
+                                </td>
+                            </tr>
+                            <tr style="width:100%;">
+                                <td style="padding:1px;" colspan="2">
                                     <strong><p style="text-align:left;">Nature of Process to be carried out</p></strong>
                                 </td>
-                                <td style="padding:2px;" colspan="1">
-                                    <strong><p style="text-align:center;">CSGT</p></strong>
+                                <td style="padding:1px;" colspan="1">
+                                    <strong><p style="text-align:left;">CSGT</p></strong>
                                 </td>
-                                <td style="padding:2px;" colspan="1">
+                                <td style="padding:1px;" colspan="1">
                                     <strong><p style="text-align:center;"> </p></strong>
                                 </td>
-                                <td style="padding:2px;" colspan="1">
+                                <td style="padding:1px;" colspan="1">
                                     <strong><p style="text-align:center;"> </p></strong>
                                 </td>
-                                <td style="padding:2px;" colspan="1">
+                                <td style="padding:1px;" colspan="1">
                                     <strong><p style="text-align:center;"> </p></strong>
                                 </td>
                             </tr>
                             <tr style="width:100%;">
-                                <td style="padding:2px;" rowspan="2" colspan="2">
+                                <td style="padding:1px;" rowspan="2" colspan="2">
                                     <strong><p style="text-align:center;"> Machining</p></strong>
                                 </td>
-                                <td style="padding:2px;" colspan="1">
-                                    <strong><p style="text-align:center;">SGST</p></strong>
+                                <td style="padding:1px;" colspan="1">
+                                    <strong><p style="text-align:left;">SGST</p></strong>
                                 </td>
-                                <td style="padding:2px;" colspan="1">
+                                <td style="padding:1px;" colspan="1">
                                     <strong><p style="text-align:center;"> </p></strong>
                                 </td>
-                                <td style="padding:2px;" colspan="1">
+                                <td style="padding:1px;" colspan="1">
                                     <strong><p style="text-align:center;"> </p></strong>
                                 </td>
-                                <td style="padding:2px;" colspan="1">
-                                    <strong><p style="text-align:center;"> </p></strong>
-                                </td>
-                            </tr>
-                            <tr style="width:100%;">
-                                <td style="padding:2px;" colspan="1">
-                                    <strong><p style="text-align:center;" >IGST</p></strong>
-                                </td>
-                                <td style="padding:2px;" colspan="1">
-                                    <strong><p style="text-align:center;"> </p></strong>
-                                </td>
-                                <td style="padding:2px;" colspan="1">
-                                    <strong><p style="text-align:center;"> </p></strong>
-                                </td>
-                                <td style="padding:2px;" colspan="1">
+                                <td style="padding:1px;" colspan="1">
                                     <strong><p style="text-align:center;"> </p></strong>
                                 </td>
                             </tr>
                             <tr style="width:100%;">
-                                <td style="padding:2px;" colspan="2">
+                                <td style="padding:1px;" colspan="1">
+                                    <strong><p style="text-align:left;" >IGST</p></strong>
+                                </td>
+                                <td style="padding:1px;" colspan="1">
+                                    <strong><p style="text-align:center;"> </p></strong>
+                                </td>
+                                <td style="padding:1px;" colspan="1">
+                                    <strong><p style="text-align:center;"> </p></strong>
+                                </td>
+                                <td style="padding:1px;" colspan="1">
+                                    <strong><p style="text-align:center;"> </p></strong>
+                                </td>
+                            </tr>
+                            <tr style="width:100%;">
+                                <td style="padding:1px;" colspan="2">
                                     <strong><p style="text-align:left;">Approx. Duration : </p></strong>
                                 </td>
-                                <td style="padding:2px;" colspan="1">
-                                    <strong><p style="text-align:center;">Total</p></strong>
+                                <td style="padding:1px;" colspan="1">
+                                    <strong><p style="text-align:left;">Total</p></strong>
                                 </td>
-                                <td style="padding:2px;" colspan="1">
+                                <td style="padding:1px;" colspan="1">
                                     <strong><p style="text-align:center;"> </p></strong>
                                 </td>
-                                <td style="padding:2px;" colspan="1">
+                                <td style="padding:1px;" colspan="1">
                                     <strong><p style="text-align:center;"> </p></strong>
                                 </td>
-                                <td style="padding:2px;" colspan="1">
+                                <td style="padding:1px;" colspan="1">
                                     <strong><p style="text-align:center;"> </p></strong>
                                 </td>
                             </tr>
                             <tr style="width:100%;">
                                 <td colspan="2">
                                     <strong>
-                                        <p style="text-align:center;padding-bottom:25px">Turtle Turbines (P) Ltd.</p>
-                                        <p style="text-align:center;padding-top:25px;">Authorized Signatory.</p>
+                                        <p style="text-align:center;padding-bottom:15px">Turtle Turbines (P) Ltd.</p>
+                                        <p style="text-align:center;padding-top:15px;">Authorized Signatory.</p>
                                     </strong>
                                 </td>
                                 <td colspan="4">
@@ -309,70 +319,70 @@
                                 </td>
                             </tr>
                             <tr style="width:100%;">
-                                <td style="padding:2px;" colspan="2">
+                                <td style="padding:1px;" colspan="2">
                                     <p>Date of Despatch of processed goods from Job-Worker</p>
                                 </td>
                                 <td colspan="4">
                                 </td>
                             </tr>
                             <tr style="width:100%;">
-                                <td style="padding:2px;" colspan="2">
+                                <td style="padding:1px;" colspan="2">
                                     <p>Quantity Despatch (No./Weight/Litre/Metre)</p>
                                 </td>
                                 <td colspan="4">
                                 </td>
                             </tr>
                             <tr style="width:100%;">
-                                <td style="padding:2px;" colspan="2">
+                                <td style="padding:1px;" colspan="2">
                                     <p>Nature of processing</p>
                                 </td>
                                 <td colspan="4">
                                 </td>
                             </tr>
                             <tr style="width:100%;">
-                                <td style="padding:2px;" colspan="2">
+                                <td style="padding:1px;" colspan="2">
                                     <p>Waste and Scrap returned if Any</p>
                                 </td>
                                 <td colspan="4">
                                 </td>
                             </tr>
                             <tr style="width:100%;">
-                                <td style="padding:2px;" colspan="2">
+                                <td style="padding:1px;" colspan="2">
                                     <p>Opening Balance [Quantity Despatched by Principle [Consignor]</p>
                                 </td>
                                 <td colspan="4">
                                 </td>
                             </tr>
                             <tr style="width:100%;">
-                                <td style="padding:2px;" colspan="2">
+                                <td style="padding:1px;" colspan="2">
                                     <p>Quantity despatched till date</p>
                                 </td>
                                 <td colspan="4">
                                 </td>
                             </tr>
                             <tr style="width:100%;">
-                                <td style="padding:2px;" colspan="2">
+                                <td style="padding:1px;" colspan="2">
                                     <p>Despatched under This Challan</p>
                                 </td>
                                 <td colspan="4">
                                 </td>
                             </tr>
                             <tr style="width:100%;">
-                                <td style="padding:2px;" colspan="2">
+                                <td style="padding:1px;" colspan="2">
                                     <p>Balance Quantity available with Job-Worker</p>
                                 </td>
                                 <td colspan="4">
                                 </td>
                             </tr>
                             <tr style="width:100%;">
-                                <td style="padding:2px;" colspan="2">
+                                <td style="padding:1px;" colspan="2">
                                     <p>Invoice No and date</p>
                                 </td>
                                 <td colspan="4">
                                 </td>
                             </tr>
                             <tr style="width:100%;">
-                                <td style="padding:2px;" colspan="2">
+                                <td style="padding:1px;" colspan="2">
                                     <p>Job-Workers Challan if any and date</p>
                                 </td>
                                 <td colspan="4">
@@ -383,42 +393,42 @@
                                     <h1> </h1>
                                 </td>
                             </tr>
-                            <tr style="width:100%;">
-                                <td style="padding:2px;" colspan="2">
+                            <tr style="width:100%;page-break-before: always;">
+                                <td style="padding:1px;" colspan="2">
                                     <strong><p>Receipt details</p></strong>
                                 </td>
-                                <td style="padding:2px;" colspan="4" rowspan="5">
+                                <td style="padding:1px;" colspan="4" rowspan="5">
                                     <strong><p>Signature and Seal of Job Worker</p></strong>
                                 </td>
                             </tr>
                             <tr style="width:100%;">
-                                <td style="padding:2px;" colspan="2">
+                                <td style="padding:1px;" colspan="2">
                                     <strong><p>For Internal Use</p></strong>
                                 </td>
                             </tr>
                             <tr style="width:100%;">
-                                <td style="padding:2px;" colspan="1">
+                                <td style="padding:1px;" colspan="1">
                                     <p>GRR No/Receipt</p>
                                 </td>
-                                <td style="padding:2px;">
+                                <td style="padding:1px;">
                                 </td>
                             </tr>
                             <tr style="width:100%;">
-                                <td style="padding:2px;" colspan="1">
+                                <td style="padding:1px;" colspan="1">
                                     <p>Date</p>
                                 </td>
-                                <td style="padding:2px;">
+                                <td style="padding:1px;">
                                 </td>
                             </tr>
-                             <tr style="width:100%;">
-                                <td style="padding:2px;" colspan="2">
+                            <tr style="width:100%;">
+                                <td style="padding:1px;" colspan="2">
                                     <h1></h1>
                                 </td>
                             </tr>
-                        </table>
-                    </div>
+                        </t>
+                    </table>
                 </div>
-            </t>
+            </div>
         </t>
     </template>
 

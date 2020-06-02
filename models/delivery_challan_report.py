@@ -8,7 +8,5 @@ class DeliveryChallan(models.AbstractModel):
     def get_report_values(self, docids, data):
         data = data if data is not None else {}
         return {
-            'datas': data.get('values'),
-            'product_datas': data.get('product_values'),
-            'work_id': data.get('work_id')
+            'datas': data.get('values')
         }

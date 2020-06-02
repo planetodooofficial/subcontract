@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
+from datetime import datetime, date
 from odoo.exceptions import UserError, AccessError, ValidationError
 
 from odoo import models, api, fields, _
@@ -303,59 +303,71 @@ class SubcontractingWorkOrder(models.Model):
     # Delivery Report Values
     def print_delivery_challan(self):
         picking = self.delivery_challan_id
-        source_loc = ''
-        dest_loc = ''
-        source_gst = ''
-        dest_gst = ''
-        if picking.location_id.partner_id.id:
-            street = str(picking.location_id.partner_id.street) or ''
-            street2 = str(picking.location_id.partner_id.street2) or ''
-            city = str(picking.location_id.partner_id.city) or ''
-            state = str(picking.location_id.partner_id.state_id.name) or ''
-            zip = str(picking.location_id.partner_id.zip) or ''
-            country = str(picking.location_id.partner_id.country_id.name) or ''
-            source_gst = str(picking.location_id.partner_id.vat) or ''
-            source_loc = street + ',' + ' ' + street2 + ',' + ' ' + city + ',' + ' ' + state + ',' + ' ' + zip + ',' + ' ' + country + '.'
-
-        if picking.location_dest_id.partner_id.id:
-            dest_street = str(picking.location_dest_id.partner_id.street) or ''
-            dest_street2 = str(picking.location_dest_id.partner_id.street2) or ''
-            dest_city = str(picking.location_dest_id.partner_id.city) or ''
-            dest_state = str(picking.location_dest_id.partner_id.state_id.name) or ''
-            dest_zip = str(picking.location_dest_id.partner_id.zip) or ''
-            dest_country = str(picking.location_dest_id.partner_id.country_id.name) or ''
-            dest_gst = str(picking.location_dest_id.partner_id.vat) or ''
-            dest_loc = dest_street + ',' + ' ' + dest_street2 + ',' + ' ' + dest_city + ',' + ' ' + dest_state + ',' + ' ' + dest_zip + ',' + ' ' + dest_country + '.'
-
-        product_values = []
-
-        values = [{
+        # if picking.location_id.partner_id.id:
+        #     street = str(picking.location_id.partner_id.street) or ''
+        #     street2 = str(picking.location_id.partner_id.street2) or ''
+        #     city = str(picking.location_id.partner_id.city) or ''
+        #     state = str(picking.location_id.partner_id.state_id.name) or ''
+        #     zip = str(picking.location_id.partner_id.zip) or ''
+        #     country = str(picking.location_id.partner_id.country_id.name) or ''
+        #     source_gst = str(picking.location_id.partner_id.vat) or ''
+        #     source_loc = street + ',' + ' ' + street2 + ',' + ' ' + city + ',' + ' ' + state + ',' + ' ' + zip + ',' + ' ' + country + '.'
+        #
+        # if picking.location_dest_id.partner_id.id:
+        #     dest_street = str(picking.location_dest_id.partner_id.street) or ''
+        #     dest_street2 = str(picking.location_dest_id.partner_id.street2) or ''
+        #     dest_city = str(picking.location_dest_id.partner_id.city) or ''
+        #     dest_state = str(picking.location_dest_id.partner_id.state_id.name) or ''
+        #     dest_zip = str(picking.location_dest_id.partner_id.zip) or ''
+        #     dest_country = str(picking.location_dest_id.partner_id.country_id.name) or ''
+        #     dest_gst = str(picking.location_dest_id.partner_id.vat) or ''
+        #     dest_loc = dest_street + ',' + ' ' + dest_street2 + ',' + ' ' + dest_city + ',' + ' ' + dest_state + ',' + ' ' + dest_zip + ',' + ' ' + dest_country + '.'
+        values = []
+        for record in picking.move_lines:
+            total_qty = 0
+            if record.product_qty:
+                total_qty += 1
+        val = {
+            # Source Location
+            'partner_name': str(picking.location_id.partner_id.name),
+            'street': str(picking.location_id.partner_id.street),
+            'street2': str(picking.location_id.partner_id.street2),
+            'city': str(picking.location_id.partner_id.city),
+            'state': str(picking.location_id.partner_id.state_id.name),
+            'zip': str(picking.location_id.partner_id.zip),
+            'country': str(picking.location_id.partner_id.country_id.name),
+            'source_gst': str(picking.location_id.partner_id.vat),
+            # Destination Location
+            'partner_name_dest': str(picking.location_dest_id.partner_id.name),
+            'dest_street': str(picking.location_dest_id.partner_id.street),
+            'dest_street2': str(picking.location_dest_id.partner_id.street2),
+            'dest_city': str(picking.location_dest_id.partner_id.city),
+            'dest_state': str(picking.location_dest_id.partner_id.state_id.name),
+            'dest_zip': str(picking.location_dest_id.partner_id.zip),
+            'dest_country': str(picking.location_dest_id.partner_id.country_id.name),
+            'dest_gst': str(picking.location_dest_id.partner_id.vat),
+            'contact': str(picking.location_dest_id.partner_id.phone) if str(picking.location_dest_id.partner_id.phone) else '',
+            'mobile': str(picking.location_dest_id.partner_id.mobile) if str(picking.location_dest_id.partner_id.mobile) else '',
+            # Picking Details
+            'date': date.today(),
             'picking_id': picking.name,
             'start_date': picking.date,
             'end_date': picking.date_done,
-            'source_location': source_loc if source_loc else picking.location_id.display_name,
             'source_vendor': picking.location_id.display_name,
-            'destination_location': dest_loc if dest_loc else picking.location_dest_id.display_name,
             'dest_vendor': picking.location_dest_id.display_name,
             'next_workorder_id': self.next_work_order_id.id if self.next_work_order_id.id else False,
             'finished_product': self.product_id.name,
             'qty_finished_product': self.qty_produced,
-            'source_gst': source_gst,
-            'dest_gst': dest_gst
-        }]
-        for record in picking.move_lines:
-            product_vals = {
-                'product_id': record.product_id.name,
-                'qty': record.product_qty,
-                'uom': record.product_uom.name,
-            }
-            product_values.append(product_vals)
-
-        work_id = [{
+            # Product
+            'product_id': record.product_id.name,
+            'qty': record.product_qty,
+            'total': total_qty,
+            'uom': record.product_uom.name,
+            'rate': record.product_id.standard_price,
+            'hsn': record.product_id.l10n_in_hsn_code,
+            # Work Id
             'next_workorder': self.next_work_order_id.id if self.next_work_order_id.id else False,
+        }
+        values.append(val)
 
-        }]
-
-        return self.env.ref('subcontract.action_report_delivery').report_action(self, data={'values': values,
-                                                                                            'product_values': product_values,
-                                                                                            'work_id': work_id})
+        return self.env.ref('subcontract.action_report_delivery').report_action(self, data={'values': values})
