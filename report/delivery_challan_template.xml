@@ -171,13 +171,13 @@
                                 </td>
                             </tr>
                             <tr style="width:100%;">
-                                <td style="padding:2px;width:10%;" colspan="1">
+                                <td style="padding:1px;width:10%;" colspan="1">
                                     <strong><p style="text-align:center;">HSN Code of the Goods</p></strong>
                                 </td>
-                                <td style="padding:2px;width:50%;" colspan="1">
+                                <td style="padding:1px;width:50%;" colspan="1">
                                     <strong><p style="text-align:center;">Description of the goods / Part No, Identification No etc.</p></strong>
                                 </td>
-                                <td style="padding:2px;width:10%;" colspan="1">
+                                <td style="padding:1px;width:10%;" colspan="1">
                                     <strong><p style="text-align:center;">QUANTITY</p></strong>
                                 </td>
                                 <td style="padding:1px;" colspan="1">
@@ -191,22 +191,22 @@
                                 </td>
                             </tr>
                             <tr style="width:100%;">
-                                <td style="padding:2px;text-align:center;" colspan="1">
+                                <td style="padding:1px;text-align:center;" colspan="1">
                                     <span t-esc="val['hsn']"/>
                                 </td>
-                                <td style="padding:2px;text-align:center;" colspan="1">
+                                <td style="padding:1px;text-align:center;" colspan="1">
                                     <span t-esc="val['product_id']"/>
                                 </td>
-                                <td style="padding:2px;text-align:center;" colspan="1">
+                                <td style="padding:1px;text-align:center;" colspan="1">
                                     <span t-esc="val['qty']"/>
                                 </td>
-                                <td style="padding:2px;text-align:center;" colspan="1">
+                                <td style="padding:1px;text-align:center;" colspan="1">
                                     <span t-esc="val['uom']"/>
                                 </td>
-                                <td style="padding:2px;text-align:center;" colspan="1">
+                                <td style="padding:1px;text-align:center;" colspan="1">
                                     <span t-esc="val['rate']"/>
                                 </td>
-                                <td style="padding:2px;text-align:center;" colspan="1">
+                                <td style="padding:1px;text-align:center;" colspan="1">
                                   <span t-esc="val['rate']"/>
                                 </td>
                             </tr>
@@ -217,7 +217,7 @@
                                 <td style="padding:1px;" colspan="1">
                                     <strong><p style="text-align:left;">Total</p></strong>
                                 </td>
-                                <td style="padding:2px;text-align:center;" colspan="1">
+                                <td style="padding:1px;text-align:center;" colspan="1">
                                     <strong><span t-esc="val['total']"/></strong>
                                 </td>
                                 <td style="padding:1px;" colspan="1">
@@ -226,7 +226,7 @@
                                 <td style="padding:1px;" colspan="1">
                                     <strong><p style="text-align:center;"></p></strong>
                                 </td>
-                                <td style="padding:2px;text-align:center;" colspan="1">
+                                <td style="padding:1px;text-align:center;" colspan="1">
                                     <strong><span t-esc="val['rate']"/></strong>
                                 </td>
                             </tr>
