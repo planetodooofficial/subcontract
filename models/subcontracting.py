@@ -325,10 +325,19 @@ class SubcontractingWorkOrder(models.Model):
         product_vals = []
         product_val = {}
         values = []
+        rate = []
+        qty = []
         total_qty = 0
+        total_rate = 0.0
         for record in picking.move_lines:
             if record.product_qty:
-                total_qty += 1
+                total_qtys = record.product_qty
+                qty.append(total_qtys)
+                total_qty = sum(qty)
+                rate_dict = record.product_id.standard_price
+                rate.append(rate_dict)
+                total_rate = sum(rate)
+
             product_val = {
                 # Product
                 'product_id': record.product_id.name,
@@ -336,8 +345,10 @@ class SubcontractingWorkOrder(models.Model):
                 'uom': record.product_uom.name,
                 'rate': record.product_id.standard_price,
                 'hsn': record.product_id.l10n_in_hsn_code,
+                'total_rate': total_rate
             }
             product_vals.append(product_val)
+
         val = {
             # Source Location
             'partner_name': str(picking.location_id.partner_id.name),
@@ -371,7 +382,8 @@ class SubcontractingWorkOrder(models.Model):
             'qty_finished_product': self.qty_produced,
             # Work Id
             'next_workorder': self.next_work_order_id.id if self.next_work_order_id.id else False,
-            'total': total_qty,
+            'total_qty': total_qty,
+            'total_rate': total_rate
         }
         values.append(val)
 

@@ -137,7 +137,7 @@
                                     <strong><p style="text-align:left;">TT/20-21/006</p></strong>
                                 </td>
                             </tr>
-                            <tr style="width:100%;">
+                            <tr>
                                 <td style="padding:1px;" colspan="1">
                                     <strong><p style="text-align:center;">PAN NO of Registered Person [Consigner]</p></strong>
                                 </td>
@@ -195,20 +195,20 @@
                                     <td style="padding:1px;text-align:center;" colspan="1">
                                         <span t-esc="vals['hsn']"/>
                                     </td>
-                                    <td style="padding:1px;text-align:center;" colspan="1">
+                                    <td style="padding:1px;text-align:left;" colspan="1">
                                         <span t-esc="vals['product_id']"/>
                                     </td>
-                                    <td style="padding:1px;text-align:center;" colspan="1">
+                                    <td style="padding:1px;text-align:left;" colspan="1">
                                         <span t-esc="vals['qty']"/>
                                     </td>
                                     <td style="padding:1px;text-align:center;" colspan="1">
                                         <span t-esc="vals['uom']"/>
                                     </td>
-                                    <td style="padding:1px;text-align:center;" colspan="1">
-                                        <span t-esc="vals['rate']"/>
+                                    <td style="padding:1px;text-align:right;" colspan="1">
+                                        <span t-esc="'%.2f'% vals['rate']"/>
                                     </td>
-                                    <td style="padding:1px;text-align:center;" colspan="1">
-                                        <span t-esc="vals['rate']"/>
+                                    <td style="padding:1px;text-align:right;" colspan="1">
+                                        <span t-esc="'%.2f'% vals['rate']"/>
                                     </td>
                                 </tr>
                             </t>
@@ -227,11 +227,11 @@
                                         <td style="padding:1px;text-align:center;" colspan="1">
                                             <span t-esc="vals['uom']"/>
                                         </td>
-                                        <td style="padding:1px;text-align:center;" colspan="1">
-                                            <span t-esc="vals['rate']"/>
+                                        <td style="padding:1px;text-align:right;" colspan="1">
+                                            <span t-esc="'%.2f'% vals['rate']"/>
                                         </td>
-                                        <td style="padding:1px;text-align:center;" colspan="1">
-                                            <span t-esc="vals['rate']"/>
+                                        <td style="padding:1px;text-align:right;" colspan="1">
+                                            <span t-esc="'%.2f'% vals['rate']"/>
                                         </td>
                                     </tr>
                                 </t>
@@ -244,7 +244,7 @@
                                     <strong><p style="text-align:left;">Total</p></strong>
                                 </td>
                                 <td style="padding:1px;text-align:center;" colspan="1">
-                                    <strong><span t-esc="val['total']"/></strong>
+                                    <strong><span t-esc="val['total_qty']"/></strong>
                                 </td>
                                 <td style="padding:1px;" colspan="1">
                                     <strong><p style="text-align:center;"></p></strong>
@@ -252,8 +252,8 @@
                                 <td style="padding:1px;" colspan="1">
                                     <strong><p style="text-align:center;"></p></strong>
                                 </td>
-                                <td style="padding:1px;text-align:center;" colspan="1">
-                                    <strong></strong>
+                                <td style="padding:1px;text-align:right;" colspan="1">
+                                    <strong><span t-esc="'%.2f'% val['total_rate']"/></strong>
                                 </td>
                             </tr>
                             <tr style="width:100%;">
@@ -317,8 +317,8 @@
                                 <td style="padding:1px;" colspan="1">
                                     <strong><p style="text-align:center;"> </p></strong>
                                 </td>
-                                <td style="padding:1px;" colspan="1">
-                                    <strong><p style="text-align:center;"> </p></strong>
+                                <td style="padding:1px;text-align:right;" colspan="1">
+                                    <strong><span t-esc="'%.2f'% val['total_rate']"/></strong>
                                 </td>
                             </tr>
                             <tr style="width:100%;">
