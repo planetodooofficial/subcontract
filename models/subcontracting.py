@@ -112,7 +112,7 @@ class SubcontractingWorkOrder(models.Model):
                 self.subcontract_supplier_location = ''
                 raise ValidationError(_("Please mention 'Subcontracted Location' for the selected Supplier."))
 
-    def po(self):
+    def purchase_order_view(self):
         purchase_id = self.env.ref('purchase.purchase_order_form').id
         search_po = self.env['purchase.order'].search([('origin', '=', self.name)], limit=1).id
         return {
@@ -123,6 +123,20 @@ class SubcontractingWorkOrder(models.Model):
             'views': [(purchase_id, 'form')],
             'view_id': purchase_id,
             'res_id': search_po,
+            'target': 'current',
+        }
+
+    def internal_transfer_view(self):
+        delivery_id = self.env.ref('stock.view_picking_form').id
+        search_transfer = self.env['stock.picking'].search([('id', '=', self.delivery_challan_id.id)], limit=1).id
+        return {
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'stock.picking',
+            'views': [(delivery_id, 'form')],
+            'view_id': delivery_id,
+            'res_id': search_transfer,
             'target': 'current',
         }
 
