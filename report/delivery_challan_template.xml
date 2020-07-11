@@ -213,27 +213,29 @@
                                 </tr>
                             </t>
                             <t t-if="not val['next_workorder']">
-                                <t t-foreach="products" t-as='vals'>
-                                    <tr style="width:100%;">
-                                        <td style="padding:1px;text-align:center;" colspan="1">
-                                            <span t-esc="vals['hsn']"/>
-                                        </td>
-                                        <td style="padding:1px;text-align:center;" colspan="1">
-                                            <span t-esc="vals['product_id']"/>
-                                        </td>
-                                        <td style="padding:1px;text-align:center;" colspan="1">
-                                            <span t-esc="vals['qty']"/>
-                                        </td>
-                                        <td style="padding:1px;text-align:center;" colspan="1">
-                                            <span t-esc="vals['uom']"/>
-                                        </td>
-                                        <td style="padding:1px;text-align:right;" colspan="1">
-                                            <span t-esc="'%.2f'% vals['rate']"/>
-                                        </td>
-                                        <td style="padding:1px;text-align:right;" colspan="1">
-                                            <span t-esc="'%.2f'% vals['rate']"/>
-                                        </td>
-                                    </tr>
+                                <t t-if="not val['next_workorder_id']">
+                                    <t t-foreach="products" t-as='vals'>
+                                        <tr style="width:100%;">
+                                            <td style="padding:1px;text-align:center;" colspan="1">
+                                                <span t-esc="vals['hsn']"/>
+                                            </td>
+                                            <td style="padding:1px;text-align:center;" colspan="1">
+                                                <span t-esc="vals['product_id']"/>
+                                            </td>
+                                            <td style="padding:1px;text-align:center;" colspan="1">
+                                                <span t-esc="vals['qty']"/>
+                                            </td>
+                                            <td style="padding:1px;text-align:center;" colspan="1">
+                                                <span t-esc="vals['uom']"/>
+                                            </td>
+                                            <td style="padding:1px;text-align:right;" colspan="1">
+                                                <span t-esc="'%.2f'% vals['rate']"/>
+                                            </td>
+                                            <td style="padding:1px;text-align:right;" colspan="1">
+                                                <span t-esc="'%.2f'% vals['rate']"/>
+                                            </td>
+                                        </tr>
+                                    </t>
                                 </t>
                             </t>
                             <tr style="width:100%;">

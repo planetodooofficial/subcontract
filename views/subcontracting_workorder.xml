@@ -10,8 +10,8 @@
                             string="Internal Transfer"
                             name="internal_transfer_view"
                             class="oe_stat_button"
-                            icon="fa fa-truck">
-<!--                            attrs="{'invisible': [('delivery_challan', '=', False)]}">-->
+                            icon="fa fa-truck"
+                            attrs="{'invisible': [('delivery_challan', '=', False)]}">
                     </button>
                     <button type="object"
                             string="RFQ"

@@ -287,8 +287,12 @@ class SubcontractingWorkOrder(models.Model):
                         move_location.picking_id.action_confirm()
                         move_location.picking_id.action_assign()
                         move_location.picking_id.button_validate()
+                        self.update({
+                            'delivery_challan_id': move_location.picking_id.id,
+                            'delivery_challan': True
+                        })
 
-                    if self.previous_workorder_id and self.previous_workorder_id.state == 'done':
+                    if not self.previous_workorder_id:
                         move_location = self.env['wiz.stock.move.location'].create({
                             'origin_location_id': self.subcontract_supplier_location.id,
                             'destination_location_id': records.location_src_id.id
