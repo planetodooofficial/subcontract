@@ -213,7 +213,7 @@
                                 </tr>
                             </t>
                             <t t-if="not val['next_workorder']">
-                                <t t-if="not val['next_workorder_id']">
+                                <t t-if="not val['previous']">
                                     <t t-foreach="products" t-as='vals'>
                                         <tr style="width:100%;">
                                             <td style="padding:1px;text-align:center;" colspan="1">

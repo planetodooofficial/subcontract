@@ -294,6 +294,28 @@ class SubcontractingWorkOrder(models.Model):
 
                     if not self.previous_workorder_id:
                         move_location = self.env['wiz.stock.move.location'].create({
+                            'origin_location_id': records.location_src_id.id,
+                            'destination_location_id': self.subcontract_supplier_location.id
+                        })
+                        for recs in records.move_raw_ids:
+                            product = self.env['product.product'].search([('name', '=', recs.product_id.name)])
+                            move_location_line = self.env['wiz.stock.move.location.line'].create({
+                                'product_id': product.id,
+                                'product_uom_id': recs.product_uom.id,
+                                'origin_location_id': records.location_src_id.id,
+                                'destination_location_id': self.subcontract_supplier_location.id,
+                                'move_quantity': float(recs.reserved_availability) if float(
+                                    recs.reserved_availability) else recs.product_uom_qty,
+                                'max_quantity': float(recs.reserved_availability) if float(
+                                    recs.reserved_availability) else recs.product_uom_qty,
+                                'move_location_wizard_id': move_location.id
+                            })
+                        move_location.action_move_location()
+                        move_location.picking_id.action_confirm()
+                        move_location.picking_id.action_assign()
+                        move_location.picking_id.button_validate()
+
+                        move_location = self.env['wiz.stock.move.location'].create({
                             'origin_location_id': self.subcontract_supplier_location.id,
                             'destination_location_id': records.location_src_id.id
                         })
@@ -401,7 +423,8 @@ class SubcontractingWorkOrder(models.Model):
             # Work Id
             'next_workorder': self.next_work_order_id.id if self.next_work_order_id.id else False,
             'total_qty': total_qty,
-            'total_rate': total_rate
+            'total_rate': total_rate,
+            'previous': self.previous_workorder_id
         }
         values.append(val)
 
