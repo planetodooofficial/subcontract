@@ -191,7 +191,7 @@ class SubcontractingWorkOrder(models.Model):
         res = super(SubcontractingWorkOrder, self).button_start()
         return res
 
-    def create_delivery_challan(self):
+    def create_delivery_receipt(self):
         purchase = self.env['purchase.order'].search([('name', '=', self.rfq_ids.name)]).id
         if purchase:
             mrp = self.env['mrp.production'].search([('name', '=', self.production_id.name)])
