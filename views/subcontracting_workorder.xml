@@ -23,7 +23,7 @@
                 </xpath>
                 <xpath expr="//header" position="inside">
                     <button name="create_rfq" type="object" string="Create RFQ" attrs="{'invisible': [('is_rfq', '=', True)]}" class="btn-success"/>
-                    <button name="create_delivery_receipt" type="object" string="Deliver Materials" attrs="{'invisible': [('delivery_challan', '=', True)]}" class="btn-info" context="{'planned': True}"/>
+                    <button name="create_delivery_receipt" type="object" string="Deliver Materials" attrs="{'invisible': ['|', ('is_rfq', '=', False),('delivery_challan', '=', True)]}" class="btn-info" context="{'planned': True}"/>
                     <button name="print_delivery_challan" type="object" string="Print Delivery Challan" attrs="{'invisible': [('delivery_challan', '=', False)]}" class="btn-info"/>
                 </xpath>
                 <xpath expr="//field[@name='product_id']" position="after">
