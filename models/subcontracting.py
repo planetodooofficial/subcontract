@@ -100,6 +100,7 @@ class SubcontractingWorkOrder(models.Model):
 
     delivery_challan_id = fields.Many2one('stock.picking', readonly=True, store=True)
     delivery_challan = fields.Boolean(readonly=True, store=True, default=False)
+    delivery_challan_no = fields.Char('Challan No', readonly=True, store=True, default=False)
 
     # Change Supplier Location based on Supplier.
     @api.multi
@@ -195,6 +196,7 @@ class SubcontractingWorkOrder(models.Model):
         purchase = self.env['purchase.order'].search([('name', '=', self.rfq_ids.name)]).id
         if purchase:
             mrp = self.env['mrp.production'].search([('name', '=', self.production_id.name)])
+            self.delivery_challan_no = self.env['ir.sequence'].next_by_code('delivery')
 
             # Internal Stock Move if No Previous WorkOrder ID found.
             # 1st Condition : If 1st workorder then Source Location will be from MO and Destination Location will be from WorkOrder Supplier Location.
@@ -268,7 +270,7 @@ class SubcontractingWorkOrder(models.Model):
                     if self.previous_workorder_id and self.previous_workorder_id.state == 'done':
                         move_location = self.env['wiz.stock.move.location'].create({
                             'origin_location_id': self.previous_workorder_id.subcontract_supplier_location.id,
-                            'destination_location_id': self.subcontract_supplier_location.id
+                            'destination_location_id': records.location_src_id.id,
                         })
                         for recs in records.move_raw_ids:
                             product = self.env['product.product'].search([('name', '=', recs.product_id.name)])
@@ -276,12 +278,30 @@ class SubcontractingWorkOrder(models.Model):
                                 'product_id': product.id,
                                 'product_uom_id': recs.product_uom.id,
                                 'origin_location_id': self.previous_workorder_id.subcontract_supplier_location.id,
-                                'destination_location_id': self.subcontract_supplier_location.id,
+                                'destination_location_id': records.location_src_id.id,
                                 'move_quantity': float(recs.reserved_availability) if float(
                                     recs.reserved_availability) else recs.product_uom_qty,
                                 'max_quantity': float(recs.reserved_availability) if float(
                                     recs.reserved_availability) else recs.product_uom_qty,
                                 'move_location_wizard_id': move_location.id
+                            })
+                        move_location.action_move_location()
+                        move_location.picking_id.action_confirm()
+                        move_location.picking_id.action_assign()
+                        move_location.picking_id.button_validate()
+
+                        move_location = self.env['wiz.stock.move.location'].create({
+                            'origin_location_id': self.subcontract_supplier_location.id,
+                            'destination_location_id': self.subcontract_supplier_location.id
+                        })
+                        move_location_line = self.env['wiz.stock.move.location.line'].create({
+                            'product_id': self.product_id.id,
+                            'product_uom_id': self.product_id.uom_id.id,
+                            'origin_location_id': self.previous_workorder_id.subcontract_supplier_location.id,
+                            'destination_location_id': self.subcontract_supplier_location.id,
+                            'move_quantity': self.qty_producing,
+                            'max_quantity': self.qty_producing,
+                            'move_location_wizard_id': move_location.id
                             })
                         move_location.action_move_location()
                         move_location.picking_id.action_confirm()
@@ -343,25 +363,6 @@ class SubcontractingWorkOrder(models.Model):
     # Delivery Report Values
     def print_delivery_challan(self):
         picking = self.delivery_challan_id
-        # if picking.location_id.partner_id.id:
-        #     street = str(picking.location_id.partner_id.street) or ''
-        #     street2 = str(picking.location_id.partner_id.street2) or ''
-        #     city = str(picking.location_id.partner_id.city) or ''
-        #     state = str(picking.location_id.partner_id.state_id.name) or ''
-        #     zip = str(picking.location_id.partner_id.zip) or ''
-        #     country = str(picking.location_id.partner_id.country_id.name) or ''
-        #     source_gst = str(picking.location_id.partner_id.vat) or ''
-        #     source_loc = street + ',' + ' ' + street2 + ',' + ' ' + city + ',' + ' ' + state + ',' + ' ' + zip + ',' + ' ' + country + '.'
-        #
-        # if picking.location_dest_id.partner_id.id:
-        #     dest_street = str(picking.location_dest_id.partner_id.street) or ''
-        #     dest_street2 = str(picking.location_dest_id.partner_id.street2) or ''
-        #     dest_city = str(picking.location_dest_id.partner_id.city) or ''
-        #     dest_state = str(picking.location_dest_id.partner_id.state_id.name) or ''
-        #     dest_zip = str(picking.location_dest_id.partner_id.zip) or ''
-        #     dest_country = str(picking.location_dest_id.partner_id.country_id.name) or ''
-        #     dest_gst = str(picking.location_dest_id.partner_id.vat) or ''
-        #     dest_loc = dest_street + ',' + ' ' + dest_street2 + ',' + ' ' + dest_city + ',' + ' ' + dest_state + ',' + ' ' + dest_zip + ',' + ' ' + dest_country + '.'
         product_vals = []
         product_val = {}
         values = []
@@ -411,6 +412,7 @@ class SubcontractingWorkOrder(models.Model):
             'contact': str(picking.location_dest_id.partner_id.phone) if str(picking.location_dest_id.partner_id.phone) else '',
             'mobile': str(picking.location_dest_id.partner_id.mobile) if str(picking.location_dest_id.partner_id.mobile) else '',
             # Picking Details
+            'challan_no': self.delivery_challan_no,
             'date': date.today(),
             'picking_id': picking.name,
             'start_date': picking.date,

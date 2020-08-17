@@ -134,7 +134,7 @@
                                     <strong><p style="text-align:right;">CHALLAN NO</p></strong>
                                 </td>
                                 <td style="padding:1px;" colspan="1">
-                                    <strong><p style="text-align:left;">TT/20-21/006</p></strong>
+                                    <span style="text-align:left;" t-esc="val['challan_no']"/>
                                 </td>
                             </tr>
                             <tr>
