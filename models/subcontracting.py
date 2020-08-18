@@ -270,7 +270,7 @@ class SubcontractingWorkOrder(models.Model):
                     if self.previous_workorder_id and self.previous_workorder_id.state == 'done':
                         move_location = self.env['wiz.stock.move.location'].create({
                             'origin_location_id': self.previous_workorder_id.subcontract_supplier_location.id,
-                            'destination_location_id': records.location_src_id.id,
+                            'destination_location_id': self.subcontract_supplier_location.id,
                         })
                         for recs in records.move_raw_ids:
                             product = self.env['product.product'].search([('name', '=', recs.product_id.name)])
@@ -278,51 +278,6 @@ class SubcontractingWorkOrder(models.Model):
                                 'product_id': product.id,
                                 'product_uom_id': recs.product_uom.id,
                                 'origin_location_id': self.previous_workorder_id.subcontract_supplier_location.id,
-                                'destination_location_id': records.location_src_id.id,
-                                'move_quantity': float(recs.reserved_availability) if float(
-                                    recs.reserved_availability) else recs.product_uom_qty,
-                                'max_quantity': float(recs.reserved_availability) if float(
-                                    recs.reserved_availability) else recs.product_uom_qty,
-                                'move_location_wizard_id': move_location.id
-                            })
-                        move_location.action_move_location()
-                        move_location.picking_id.action_confirm()
-                        move_location.picking_id.action_assign()
-                        move_location.picking_id.button_validate()
-
-                        move_location = self.env['wiz.stock.move.location'].create({
-                            'origin_location_id': self.subcontract_supplier_location.id,
-                            'destination_location_id': self.subcontract_supplier_location.id
-                        })
-                        move_location_line = self.env['wiz.stock.move.location.line'].create({
-                            'product_id': self.product_id.id,
-                            'product_uom_id': self.product_id.uom_id.id,
-                            'origin_location_id': self.previous_workorder_id.subcontract_supplier_location.id,
-                            'destination_location_id': self.subcontract_supplier_location.id,
-                            'move_quantity': self.qty_producing,
-                            'max_quantity': self.qty_producing,
-                            'move_location_wizard_id': move_location.id
-                            })
-                        move_location.action_move_location()
-                        move_location.picking_id.action_confirm()
-                        move_location.picking_id.action_assign()
-                        move_location.picking_id.button_validate()
-                        self.update({
-                            'delivery_challan_id': move_location.picking_id.id,
-                            'delivery_challan': True
-                        })
-
-                    if not self.previous_workorder_id:
-                        move_location = self.env['wiz.stock.move.location'].create({
-                            'origin_location_id': records.location_src_id.id,
-                            'destination_location_id': self.subcontract_supplier_location.id
-                        })
-                        for recs in records.move_raw_ids:
-                            product = self.env['product.product'].search([('name', '=', recs.product_id.name)])
-                            move_location_line = self.env['wiz.stock.move.location.line'].create({
-                                'product_id': product.id,
-                                'product_uom_id': recs.product_uom.id,
-                                'origin_location_id': records.location_src_id.id,
                                 'destination_location_id': self.subcontract_supplier_location.id,
                                 'move_quantity': float(recs.reserved_availability) if float(
                                     recs.reserved_availability) else recs.product_uom_qty,
@@ -334,10 +289,11 @@ class SubcontractingWorkOrder(models.Model):
                         move_location.picking_id.action_confirm()
                         move_location.picking_id.action_assign()
                         move_location.picking_id.button_validate()
-
-                        move_location = self.env['wiz.stock.move.location'].create({
+                        self._cr.commit()
+                        # --------------------------------------------------------------------------------------------------------------------------------------------------------
+                        move_location_prod = self.env['wiz.stock.move.location'].create({
                             'origin_location_id': self.subcontract_supplier_location.id,
-                            'destination_location_id': records.location_src_id.id
+                            'destination_location_id': records.location_src_id.id,
                         })
                         for recs in records.move_raw_ids:
                             product = self.env['product.product'].search([('name', '=', recs.product_id.name)])
@@ -350,13 +306,80 @@ class SubcontractingWorkOrder(models.Model):
                                     recs.reserved_availability) else recs.product_uom_qty,
                                 'max_quantity': float(recs.reserved_availability) if float(
                                     recs.reserved_availability) else recs.product_uom_qty,
-                                'move_location_wizard_id': move_location.id
+                                'move_location_wizard_id': move_location_prod.id
                             })
-                        move_location.action_move_location()
+                        move_location_prod.action_move_location()
                         self.update({
-                            'delivery_challan_id': move_location.picking_id.id,
+                            'delivery_challan_id': move_location_prod.picking_id.id,
                             'delivery_challan': True
                         })
+                        # --------------------------------------------------------------------------------------------------------------------------------------------------------
+
+                        # move_location = self.env['wiz.stock.move.location'].create({
+                        #     'origin_location_id': self.subcontract_supplier_location.id,
+                        #     'destination_location_id': records.location_src_id.id,
+                        # })
+                        # move_location_line = self.env['wiz.stock.move.location.line'].create({
+                        #     'product_id': self.product_id.id,
+                        #     'product_uom_id': self.product_id.uom_id.id,
+                        #     'origin_location_id': self.previous_workorder_id.subcontract_supplier_location.id,
+                        #     'destination_location_id': records.location_src_id.id,
+                        #     'move_quantity': self.qty_producing,
+                        #     'max_quantity': self.qty_producing,
+                        #     'move_location_wizard_id': move_location.id
+                        # })
+                        # move_location.action_move_location()
+                        # self.update({
+                        #     'delivery_challan_id': move_location.picking_id.id,
+                        #     'delivery_challan': True
+                        # })
+                    # --------------------------------------------------------------------------------------------------------------------------------------------------------
+                    if not self.previous_workorder_id:
+                        if not self.next_work_order_id:
+                            move_location = self.env['wiz.stock.move.location'].create({
+                                'origin_location_id': records.location_src_id.id,
+                                'destination_location_id': self.subcontract_supplier_location.id
+                            })
+                            for recs in records.move_raw_ids:
+                                product = self.env['product.product'].search([('name', '=', recs.product_id.name)])
+                                move_location_line = self.env['wiz.stock.move.location.line'].create({
+                                    'product_id': product.id,
+                                    'product_uom_id': recs.product_uom.id,
+                                    'origin_location_id': records.location_src_id.id,
+                                    'destination_location_id': self.subcontract_supplier_location.id,
+                                    'move_quantity': float(recs.reserved_availability) if float(
+                                        recs.reserved_availability) else recs.product_uom_qty,
+                                    'max_quantity': float(recs.reserved_availability) if float(
+                                        recs.reserved_availability) else recs.product_uom_qty,
+                                    'move_location_wizard_id': move_location.id
+                                })
+                            move_location.action_move_location()
+                            move_location.picking_id.action_confirm()
+                            move_location.picking_id.action_assign()
+                            move_location.picking_id.button_validate()
+
+                            move_location = self.env['wiz.stock.move.location'].create({
+                                'origin_location_id': self.subcontract_supplier_location.id,
+                                'destination_location_id': records.location_src_id.id
+                            })
+                            for recs in records.move_raw_ids:
+                                product = self.env['product.product'].search([('name', '=', recs.product_id.name)])
+                                move_location_line = self.env['wiz.stock.move.location.line'].create({
+                                    'product_id': product.id,
+                                    'product_uom_id': recs.product_uom.id,
+                                    'origin_location_id': self.subcontract_supplier_location.id,
+                                    'destination_location_id': records.location_src_id.id,
+                                    'move_quantity': float(recs.reserved_availability) if float(
+                                        recs.reserved_availability) else recs.product_uom_qty,
+                                    'max_quantity': float(recs.reserved_availability) if float(
+                                        recs.reserved_availability) else recs.product_uom_qty,
+                                    'move_location_wizard_id': move_location.id
+                                })
+                            move_location.action_move_location()
+                            self.update({
+                                'delivery_challan_id': move_location.picking_id.id,
+                                'delivery_challan': True
+                            })
         else:
             raise ValidationError(_("NO RFQ found!"))
 
@@ -370,64 +393,122 @@ class SubcontractingWorkOrder(models.Model):
         qty = []
         total_qty = 0
         total_rate = 0.0
-        for record in picking.move_lines:
-            if record.product_qty:
-                total_qtys = record.product_qty
-                qty.append(total_qtys)
-                total_qty = sum(qty)
-                rate_dict = record.product_id.standard_price
-                rate.append(rate_dict)
-                total_rate = sum(rate)
 
+        if self.next_work_order_id:
+            for record in picking.move_lines:
+                if record.product_qty:
+                    total_qtys = record.product_qty
+                    qty.append(total_qtys)
+                    total_qty = sum(qty)
+                    rate_dict = record.product_id.standard_price
+                    rate.append(rate_dict)
+                    total_rate = sum(rate)
+
+                product_val = {
+                    # Product
+                    'product_id': record.product_id.name,
+                    'qty': record.product_qty,
+                    'uom': record.product_uom.name,
+                    'rate': record.product_id.standard_price,
+                    'hsn': record.product_id.l10n_in_hsn_code,
+                    'total_rate': total_rate
+                }
+                product_vals.append(product_val)
+            val = {
+                # Source Location
+                'partner_name': str(picking.location_id.partner_id.name),
+                'street': str(picking.location_id.partner_id.street),
+                'street2': str(picking.location_id.partner_id.street2),
+                'city': str(picking.location_id.partner_id.city),
+                'state': str(picking.location_id.partner_id.state_id.name),
+                'zip': str(picking.location_id.partner_id.zip),
+                'country': str(picking.location_id.partner_id.country_id.name),
+                'source_gst': str(picking.location_id.partner_id.vat),
+                # Destination Location
+                'partner_name_dest': str(picking.location_dest_id.partner_id.name),
+                'dest_street': str(picking.location_dest_id.partner_id.street),
+                'dest_street2': str(picking.location_dest_id.partner_id.street2),
+                'dest_city': str(picking.location_dest_id.partner_id.city),
+                'dest_state': str(picking.location_dest_id.partner_id.state_id.name),
+                'dest_zip': str(picking.location_dest_id.partner_id.zip),
+                'dest_country': str(picking.location_dest_id.partner_id.country_id.name),
+                'dest_gst': str(picking.location_dest_id.partner_id.vat),
+                'contact': str(picking.location_dest_id.partner_id.phone) if str(
+                    picking.location_dest_id.partner_id.phone) else '',
+                'mobile': str(picking.location_dest_id.partner_id.mobile) if str(
+                    picking.location_dest_id.partner_id.mobile) else '',
+                # Picking Details
+                'challan_no': self.delivery_challan_no,
+                'date': date.today(),
+                'picking_id': picking.name,
+                'start_date': picking.date,
+                'end_date': picking.date_done,
+                'source_vendor': picking.location_id.display_name,
+                'dest_vendor': picking.location_dest_id.display_name,
+                'next_workorder_id': self.next_work_order_id.id if self.next_work_order_id.id else False,
+                'finished_product': self.product_id.name,
+                'qty_finished_product': self.qty_produced,
+                # Work Id
+                'next_workorder': self.next_work_order_id.id if self.next_work_order_id.id else False,
+                'total_qty': total_qty,
+                'total_rate': total_rate,
+                'previous': self.previous_workorder_id
+            }
+            values.append(val)
+
+        else:
             product_val = {
                 # Product
-                'product_id': record.product_id.name,
-                'qty': record.product_qty,
-                'uom': record.product_uom.name,
-                'rate': record.product_id.standard_price,
-                'hsn': record.product_id.l10n_in_hsn_code,
-                'total_rate': total_rate
+                'product_id': self.product_id.name,
+                'qty': self.qty_producing if self.qty_producing != 0 else self.qty_produced,
+                'uom': self.product_id.uom_id.name,
+                'rate': self.product_id.standard_price,
+                'hsn': self.product_id.l10n_in_hsn_code,
+                'total_rate': self.product_id.standard_price,
             }
             product_vals.append(product_val)
 
-        val = {
-            # Source Location
-            'partner_name': str(picking.location_id.partner_id.name),
-            'street': str(picking.location_id.partner_id.street),
-            'street2': str(picking.location_id.partner_id.street2),
-            'city': str(picking.location_id.partner_id.city),
-            'state': str(picking.location_id.partner_id.state_id.name),
-            'zip': str(picking.location_id.partner_id.zip),
-            'country': str(picking.location_id.partner_id.country_id.name),
-            'source_gst': str(picking.location_id.partner_id.vat),
-            # Destination Location
-            'partner_name_dest': str(picking.location_dest_id.partner_id.name),
-            'dest_street': str(picking.location_dest_id.partner_id.street),
-            'dest_street2': str(picking.location_dest_id.partner_id.street2),
-            'dest_city': str(picking.location_dest_id.partner_id.city),
-            'dest_state': str(picking.location_dest_id.partner_id.state_id.name),
-            'dest_zip': str(picking.location_dest_id.partner_id.zip),
-            'dest_country': str(picking.location_dest_id.partner_id.country_id.name),
-            'dest_gst': str(picking.location_dest_id.partner_id.vat),
-            'contact': str(picking.location_dest_id.partner_id.phone) if str(picking.location_dest_id.partner_id.phone) else '',
-            'mobile': str(picking.location_dest_id.partner_id.mobile) if str(picking.location_dest_id.partner_id.mobile) else '',
-            # Picking Details
-            'challan_no': self.delivery_challan_no,
-            'date': date.today(),
-            'picking_id': picking.name,
-            'start_date': picking.date,
-            'end_date': picking.date_done,
-            'source_vendor': picking.location_id.display_name,
-            'dest_vendor': picking.location_dest_id.display_name,
-            'next_workorder_id': self.next_work_order_id.id if self.next_work_order_id.id else False,
-            'finished_product': self.product_id.name,
-            'qty_finished_product': self.qty_produced,
-            # Work Id
-            'next_workorder': self.next_work_order_id.id if self.next_work_order_id.id else False,
-            'total_qty': total_qty,
-            'total_rate': total_rate,
-            'previous': self.previous_workorder_id
-        }
-        values.append(val)
+            val = {
+                # Source Location
+                'partner_name': str(picking.location_id.partner_id.name),
+                'street': str(picking.location_id.partner_id.street),
+                'street2': str(picking.location_id.partner_id.street2),
+                'city': str(picking.location_id.partner_id.city),
+                'state': str(picking.location_id.partner_id.state_id.name),
+                'zip': str(picking.location_id.partner_id.zip),
+                'country': str(picking.location_id.partner_id.country_id.name),
+                'source_gst': str(picking.location_id.partner_id.vat),
+                # Destination Location
+                'partner_name_dest': str(picking.location_dest_id.partner_id.name),
+                'dest_street': str(picking.location_dest_id.partner_id.street),
+                'dest_street2': str(picking.location_dest_id.partner_id.street2),
+                'dest_city': str(picking.location_dest_id.partner_id.city),
+                'dest_state': str(picking.location_dest_id.partner_id.state_id.name),
+                'dest_zip': str(picking.location_dest_id.partner_id.zip),
+                'dest_country': str(picking.location_dest_id.partner_id.country_id.name),
+                'dest_gst': str(picking.location_dest_id.partner_id.vat),
+                'contact': str(picking.location_dest_id.partner_id.phone) if str(
+                    picking.location_dest_id.partner_id.phone) else '',
+                'mobile': str(picking.location_dest_id.partner_id.mobile) if str(
+                    picking.location_dest_id.partner_id.mobile) else '',
+                # Picking Details
+                'challan_no': self.delivery_challan_no,
+                'date': date.today(),
+                'picking_id': picking.name,
+                'start_date': picking.date,
+                'end_date': picking.date_done,
+                'source_vendor': picking.location_id.display_name,
+                'dest_vendor': picking.location_dest_id.display_name,
+                'next_workorder_id': self.next_work_order_id.id if self.next_work_order_id.id else False,
+                'finished_product': self.product_id.name,
+                'qty_finished_product': self.qty_produced,
+                # Work Id
+                'next_workorder': self.next_work_order_id.id if self.next_work_order_id.id else False,
+                'total_qty': self.qty_producing if self.qty_producing != 0 else self.qty_produced,
+                'total_rate': self.product_id.standard_price,
+                'previous': self.previous_workorder_id
+            }
+            values.append(val)
 
-        return self.env.ref('subcontract.action_report_delivery').report_action(self, data={'values': values, 'product_values': product_vals})
+        return self.env.ref('subcontract.action_report_delivery').report_action(self, data={'values': values,
+                                                                                            'product_values': product_vals})
