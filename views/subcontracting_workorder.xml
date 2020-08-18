@@ -88,5 +88,15 @@
                   action="subcontract_workorders"
                   parent="mrp.menu_mrp_manufacturing"
                   groups="mrp.group_mrp_routings"/>
+
+        <record id="sequence_challan_no" model="ir.sequence">
+            <field name="name">Delivery Challan No.</field>
+            <field name="code">delivery</field>
+            <field name="active">TRUE</field>
+            <field name="prefix">TT/20-21/</field>
+            <field name="padding">3</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+        </record>
     </data>
 </odoo>
