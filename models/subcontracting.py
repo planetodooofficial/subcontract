@@ -186,8 +186,8 @@ class SubcontractingWorkOrder(models.Model):
         if not self.is_rfq:
             raise ValidationError(_("Please generate RFQ. Then start the work order."))
 
-        if self.delivery_challan_id.state != 'done':
-            raise ValidationError(_("Raw materials not release to vendor."))
+        # if self.delivery_challan_id.state != 'done':
+        #     raise ValidationError(_("Raw materials not release to vendor."))
 
         res = super(SubcontractingWorkOrder, self).button_start()
         return res
