@@ -190,6 +190,7 @@
                                     <strong><p style="text-align:center;">Total</p></strong>
                                 </td>
                             </tr>
+                            <t t-set="i" t-value="0"/>
                             <t t-foreach="products" t-as='vals'>
                                 <tr style="width:100%;">
                                     <td style="padding:1px;text-align:center;" colspan="1">
@@ -211,6 +212,7 @@
                                         <span t-esc="'%.2f'% vals['rate']"/>
                                     </td>
                                 </tr>
+                                <t t-set="i" t-value="i+1"/>
                             </t>
                             <t t-if="not val['next_workorder']">
                                 <t t-if="not val['previous']">
@@ -421,6 +423,9 @@
                                     <h1> </h1>
                                 </td>
                             </tr>
+                            <t t-if="len(products) > 1">
+                                <p style="page-break-after:always;"/>
+                            </t>
                             <tr style="width:100%;page-break-before: always;">
                                 <td style="padding:1px;" colspan="2">
                                     <strong><p>Receipt details</p></strong>
@@ -448,11 +453,12 @@
                                 <td style="padding:1px;">
                                 </td>
                             </tr>
-                            <tr style="width:100%;">
-                                <td style="padding:1px;" colspan="2">
-                                    <h1></h1>
-                                </td>
-                            </tr>
+                            <!--                            Removed to adjust alignment-->
+                            <!--                            <tr style="width:100%;">-->
+                            <!--                                <td style="padding:1px;" colspan="2">-->
+                            <!--                                    <h1></h1>-->
+                            <!--                                </td>-->
+                            <!--                            </tr>-->
                         </t>
                     </table>
                 </div>
