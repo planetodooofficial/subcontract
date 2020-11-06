@@ -17,25 +17,16 @@
             <field name="dpi">90</field>
        </record>
 
-<!--       <report-->
-<!--            string="Delivery Challan"-->
-<!--            id="action_report_delivery"-->
-<!--            model="mrp.workorder"-->
-<!--            report_type="qweb-pdf"-->
-<!--            name="subcontract.report_deliveryslip"-->
-<!--            file="subcontract.report_deliveryslip"-->
-<!--            print_report_name="'Delivery Challan - %s - %s' % (object.partner_id.name or '', object.name)"-->
-<!--            paperformat = "subcontract.paperformat_tax_invoice"-->
-<!--        />-->
-        <report
+       <report
             string="Delivery Challan"
             id="action_report_delivery"
             model="mrp.workorder"
             report_type="qweb-pdf"
             name="subcontract.report_deliveryslip"
             file="subcontract.report_deliveryslip"
-            print_report_name="'Delivery Challan - %s' % (object.name)"
+            print_report_name="'Delivery Challan - %s - %s' % (object.partner_id.name or '', object.name)"
             paperformat = "subcontract.paperformat_tax_invoice"
         />
+
     </data>
 </odoo>
