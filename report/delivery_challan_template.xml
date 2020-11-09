@@ -68,10 +68,10 @@
                                 </td>
                             </tr>
                             <tr style="width:100%;">
-                                <td style="padding:1px;" colspan="2">
+                                <td class="td" style="padding:1px;" colspan="2">
                                     <strong><p style="text-align:left;">Name and Address of Consigner [Registered Person/Principal]</p></strong>
                                 </td>
-                                <td style="padding:1px;" colspan="4">
+                                <td class="td" style="padding:1px;" colspan="4">
                                     <strong><p style="text-align:left;">Name and Address of the Job worker[Consignee]</p></strong>
                                 </td>
                             </tr>
@@ -99,13 +99,13 @@
                                 </td>
                             </tr>
                             <tr style="width:100%;">
-                                <td style="padding:1px;" colspan="2">
+                                <td class="td" style="padding:1px;" colspan="2">
                                     <strong><p style="text-align:left;">GSTIN No of the Consigner [Registered Person]</p></strong>
                                 </td>
-                                <td style="padding:1px;" colspan="3">
+                                <td class="td" style="padding:1px;" colspan="3">
                                     <strong><p style="text-align:left;">GSTIN No of the Job-Worker[If Registered]</p></strong>
                                 </td>
-                                <td style="padding:1px;" colspan="1">
+                                <td class="td" style="padding:1px;" colspan="1">
                                     <strong><p style="text-align:left;">Vendor Code</p></strong>
                                 </td>
                             </tr>
@@ -121,33 +121,33 @@
                                 </td>
                             </tr>
                             <tr style="width:100%;" >
-                                <td style="padding:1px;" colspan="1">
+                                <td class="td" style="padding:1px;" colspan="1">
                                     <span></span>
                                 </td>
-                                <td style="padding:1px;" colspan="1">
+                                <td class="td" style="padding:1px;" colspan="1">
                                     <span></span>
                                 </td>
-                                <td style="padding:1px;" colspan="1">
+                                <td class="td" style="padding:1px;" colspan="1">
                                     <span></span>
                                 </td>
-                                <td style="padding:1px;" colspan="2">
+                                <td class="td" style="padding:1px;" colspan="2">
                                     <strong><p style="text-align:right;">CHALLAN NO</p></strong>
                                 </td>
                                 <td style="padding:1px;" colspan="1">
                                     <span style="text-align:left;" t-esc="val['challan_no']"/>
                                 </td>
                             </tr>
-                            <tr>
-                                <td style="padding:1px;" colspan="1">
+                            <tr style="width:100%;height:8%">
+                                <td class="td" style="padding:1px;" width="20%" colspan="2">
                                     <strong><p style="text-align:center;">PAN NO of Registered Person [Consigner]</p></strong>
                                 </td>
-                                <td style="padding:1px;" colspan="2">
+                                <td class="td row" style="padding:1px;" colspan="2">
                                     <strong><p style="text-align:center;">PAN NO of Registered Person [Consignee]</p></strong>
                                 </td>
-                                <td style="padding:1px;" colspan="2">
+                                <td class="td" style="padding:1px;" colspan="1">
                                     <strong><p style="text-align:right;">CHALLAN DATE</p></strong>
                                 </td>
-                                <td style="padding:1px;" colspan="1">
+                                <td class="td" style="padding:1px;" colspan="1">
                                     <strong><span style="text-align:left;" t-esc="val['date']"/></strong>
                                 </td>
                             </tr>
@@ -170,7 +170,7 @@
                                     <h1> </h1>
                                 </td>
                             </tr>
-                            <tr style="width:100%;">
+                            <tr style="width:100%;height:8%">
                                 <td style="padding:1px;width:10%;" colspan="1">
                                     <strong><p style="text-align:center;">HSN Code of the Goods</p></strong>
                                 </td>
@@ -423,7 +423,7 @@
                                     <h1> </h1>
                                 </td>
                             </tr>
-                            <t t-if="len(products) > 1">
+                            <t t-if="len(products) > 4">
                                 <p style="page-break-after:always;"/>
                             </t>
                             <tr style="width:100%;page-break-before: always;">
