@@ -423,10 +423,10 @@
                                     <h1> </h1>
                                 </td>
                             </tr>
-                            <t t-if="len(products) > 4">
+                            <t t-if="i > 4">
                                 <p style="page-break-after:always;"/>
                             </t>
-                            <tr style="width:100%;page-break-before: always;">
+                            <tr style="width:100%;">
                                 <td style="padding:1px;" colspan="2">
                                     <strong><p>Receipt details</p></strong>
                                 </td>
