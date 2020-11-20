@@ -47,6 +47,7 @@
             <div class="page">
                 <div class="oe_structure"/>
                 <div class="row" style="text-align:center">
+                    <!--                    <div style="page-break-after:always;"/>-->
                     <table>
                         <t t-foreach="datas" t-as='val'>
                             <tr style="width:100%;">
@@ -412,47 +413,24 @@
                                 </td>
                             </tr>
                             <tr style="width:100%;">
+
                                 <td style="padding:1px;" colspan="2">
                                     <p>Job-Workers Challan if any and date</p>
                                 </td>
                                 <td colspan="4">
                                 </td>
                             </tr>
+
                             <tr style="width:100%;">
                                 <td colspan="6">
                                     <h1> </h1>
                                 </td>
                             </tr>
-                            <t t-if="len(products) &gt; 4">
-                                <div style="page-break-after: auto;"><span style="display: none;"> </span></div>
-                            </t>
-                            <tr style="width:100%;">
-                                <td style="padding:1px;" colspan="2">
-                                    <strong><p>Receipt details</p></strong>
-                                </td>
-                                <td style="padding:1px;" colspan="4" rowspan="5">
-                                    <strong><p>Signature and Seal of Job Worker</p></strong>
-                                </td>
-                            </tr>
-                            <tr style="width:100%;">
-                                <td style="padding:1px;" colspan="2">
-                                    <strong><p>For Internal Use</p></strong>
-                                </td>
-                            </tr>
-                            <tr style="width:100%;">
-                                <td style="padding:1px;" colspan="1">
-                                    <p>GRR No/Receipt</p>
-                                </td>
-                                <td style="padding:1px;">
-                                </td>
-                            </tr>
-                            <tr style="width:100%;">
-                                <td style="padding:1px;" colspan="1">
-                                    <p>Date</p>
-                                </td>
-                                <td style="padding:1px;">
-                                </td>
-                            </tr>
+
+
+                            <!--                                <t t-set="page" t-value="page+1"/>-->
+
+
                             <!--                            Removed to adjust alignment-->
                             <!--                            <tr style="width:100%;">-->
                             <!--                                <td style="padding:1px;" colspan="2">-->
@@ -461,6 +439,41 @@
                             <!--                            </tr>-->
                         </t>
                     </table>
+
+                    <t t-if="prod_len &gt; max_len">
+                        <p style="page-break-before:always;">
+                        </p>
+                    </t>
+                    <table style="width:100%;">
+                        <tr style="width:100%;border: 1px solid black border-collapse: collapse;border-top: none!important;">
+                            <td style="padding:1px;width:60%;" colspan="8">
+                                <strong><p>Receipt details</p></strong>
+                            </td>
+                            <td style="padding:1px;width:40%;text-align:center;" colspan="4" rowspan="4">
+                                <strong><p>Signature and Seal of Job Worker</p></strong>
+                            </td>
+                        </tr>
+                        <tr style="width:100%;">
+                            <td style="padding:1px;width:60%;" colspan="8">
+                                <strong><p>For Internal Use</p></strong>
+                            </td>
+                        </tr>
+                        <tr style="width:100%;">
+                            <td style="padding:1px;width:20%;" colspan="3">
+                                <p>GRR No/Receipt</p>
+                            </td>
+                            <td style="padding:1px;width:40%;" colspan="5">
+                            </td>
+                        </tr>
+                        <tr style="width:100%;">
+                            <td style="padding:1px;width:20%;" colspan="3">
+                                <p>Date</p>
+                            </td>
+                            <td style="padding:1px;width:40%;" colspan="5">
+                            </td>
+                        </tr>
+                    </table>
+
                 </div>
             </div>
         </t>
