@@ -423,8 +423,8 @@
                                     <h1> </h1>
                                 </td>
                             </tr>
-                            <t t-if="i > 4">
-                                <p style="page-break-after:always;"/>
+                            <t t-if="len(products) > 4">
+                                <p style="page-break-inside:always"/>
                             </t>
                             <tr style="width:100%;">
                                 <td style="padding:1px;" colspan="2">
