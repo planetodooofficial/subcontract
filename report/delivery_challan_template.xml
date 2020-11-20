@@ -424,7 +424,7 @@
                                 </td>
                             </tr>
                             <t t-if="len(products) > 4">
-                                <p style="page-break-inside:always"/>
+                                <div style="page-break-inside: auto"/>
                             </t>
                             <tr style="width:100%;">
                                 <td style="padding:1px;" colspan="2">
