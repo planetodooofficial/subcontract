@@ -423,7 +423,7 @@
                                     <h1> </h1>
                                 </td>
                             </tr>
-                            <t t-if="len(products) > 4">
+                            <t t-if="products.len() > 4">
                                 <div style="page-break-inside: auto"/>
                             </t>
                             <tr style="width:100%;">
